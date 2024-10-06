@@ -2,12 +2,12 @@
 
 ## Technologies
 
-- ASP.NET Core [ASP.NET Core - Microsoft](https://dotnet.microsoft.com/en-us/apps/aspnet)
-- MongoDB [MongoDB: The Developer Data Platform](https://www.mongodb.com/)
-- xUnit [Unit testing C# in .NET using dotnet test and xUnit - Microsoft](https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-with-dotnet-test)
-- Docker & Docker Compose [Docker Docs - Docker](https://docs.docker.com/)
-- Traefik [Traefik, The Cloud Native Application Proxy - Traefik Labs](https://traefik.io/traefik/)
-- Watchtower [Watchtower - containrrr.dev](https://containrrr.dev/watchtower/)
+- ASP.NET Core | [ASP.NET Core - Microsoft](https://dotnet.microsoft.com/en-us/apps/aspnet)
+- MongoDB | [MongoDB: The Developer Data Platform](https://www.mongodb.com/)
+- xUnit | [Unit testing C# in .NET using dotnet test and xUnit - Microsoft](https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-with-dotnet-test)
+- Docker & Docker Compose | [Docker Docs - Docker](https://docs.docker.com/)
+- Traefik | [Traefik, The Cloud Native Application Proxy - Traefik Labs](https://traefik.io/traefik/)
+- Watchtower | [Watchtower - containrrr.dev](https://containrrr.dev/watchtower/)
 
 ## Running the project in development
 
