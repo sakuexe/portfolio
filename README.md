@@ -1,5 +1,14 @@
 # Fullstack Portfolio Website
 
+## Technologies
+
+- ASP.NET Core [ASP.NET Core - Microsoft](https://dotnet.microsoft.com/en-us/apps/aspnet)
+- MongoDB [MongoDB: The Developer Data Platform](https://www.mongodb.com/)
+- xUnit [Unit testing C# in .NET using dotnet test and xUnit - Microsoft](https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-with-dotnet-test)
+- Docker & Docker Compose [Docker Docs - Docker](https://docs.docker.com/)
+- Traefik [Traefik, The Cloud Native Application Proxy - Traefik Labs](https://traefik.io/traefik/)
+- Watchtower [Watchtower - containrrr.dev](https://containrrr.dev/watchtower/)
+
 ## Running the project in development
 
 1. Clone the repository
@@ -48,16 +57,10 @@ nano .env
 Guide for Ubuntu:
 [Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/)
 
-4. Update the environment variables in the docker-compose file
-
-5. Add your domain to the Caddyfile
+5. Update the docker-compose to include your domain name, instead of mine
 ```bash
-# Caddyfile
-yourdomain.com {
-    reverse_proxy dotnet:80
-}
-# with a quick sed command
-sed -i 's/sakukarttunen.com/yourdomain.cool/g' caddy/Caddyfile
+# replace myepicwebsite.cool with your domain
+echo "myepicwebsite.cool" | xargs -I {} sed -i 's/sakukarttunen.com/{}/g' docker-compose.yml
 ```
 
 5. Run docker compose
@@ -65,19 +68,11 @@ sed -i 's/sakukarttunen.com/yourdomain.cool/g' caddy/Caddyfile
 This will build the images and run the containers in the background
 ```bash
 docker compose up --build -d
+# check that all went well
+docker logs portfolio-1
 ```
 
 6. Visit your domain
 
-It should now have SSL certificates and have base data from the database.
-The initial build will take a while, when caddy has to get the certificates from Let's Encrypt.
-
-7. (Optional) Run the docker compose automatically on boot
-
-All you have to do is add a symbolic link to `/etc/systemd/system/` and enable the service
-```bash
-sudo ln -s $(pwd)/portfolio-docker.service /etc/systemd/system/
-sudo systemctl enable portfolio-docker
-sudo systemctl start portfolio-docker # if you haven't yet started the service
-sudo systemctl status portfolio-docker
-```
+It should now have SSL certificates and include base data in the database.
+The initial build will take a while, when traefik has to get the certificates from Let's Encrypt.

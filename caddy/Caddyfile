@@ -1,3 +1,0 @@
-sakukarttunen.com {
-  reverse_proxy dotnet:80
-}
