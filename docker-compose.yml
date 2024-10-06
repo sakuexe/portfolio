@@ -1,11 +1,47 @@
 services:
-  dotnet:
-    container_name: dotnet
+  traefik:
+    container_name: traefik
+    image: traefik:v3.1
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker"
+      - "--providers.docker.exposedbydefault=false"
+      # TLS (https)
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=saku.karttunen@gmail.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      # http redirection
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      # local development
+      # - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "443:443"
+      # Web UI
+      - "8080:8080"
+    volumes:
+      # allow Traefik to listen for docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+      # persist the ssl certificate
+      - letsencrypt:/letsencrypt
+    networks:
+      - default
+    depends_on: 
+      - portfolio
+
+  portfolio:
     image: ghcr.io/sakuexe/portfolio:prod
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.dotnet-fullstack-portfolio.rule=Host(`localhost`)"
-      - "traefik.http.routers.dotnet-fullstack-portfolio.entrypoints=web"
+      - "traefik.http.routers.dotnet.rule=Host(`fs.sakukarttunen.com`)"
+      - "traefik.http.routers.dotnet.entrypoints=websecure"
+      - "traefik.http.routers.dotnet.tls.certresolver=myresolver"
+      # local development
+      # - "traefik.http.routers.dotnet.rule=Host(`localhost`)"
+      # - "traefik.http.routers.dotnet.entrypoints=websecure"
     env_file: .env
     depends_on:
       - mongodb
@@ -14,6 +50,11 @@ services:
       - uploaded_files:/App/wwwroot/uploads
     networks:
       - default
+    ports:
+      - "80"
+      - "443"
+    deploy:
+      replicas: 3 # adjust as needed
 
   mongodb:
     container_name: mongodb
@@ -23,27 +64,9 @@ services:
     networks:
       - default
 
-  traefik:
-    container_name: reverse-proxy
-    image: traefik:v3.1
-    command:
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--entrypoints.web.address=:80"
-    ports:
-      - "80:80"
-      # Web UI
-      - "8080:8080"
-    volumes:
-      # allow Traefik to listen for docker events
-      - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - default
-    depends_on: 
-      - dotnet
-
 networks:
   default:
 volumes:
   mongodb_data:
   uploaded_files:
+  letsencrypt:
