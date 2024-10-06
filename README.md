@@ -4,12 +4,12 @@
 
 1. Clone the repository
 ```bash
-git clone https://github.com/sakuexe/fullstack-portfolio.git
+git clone https://github.com/sakuexe/portfolio.git
 ```
 
 2. Install the dependencies
 ```bash
-cd dotnet-portfolio
+cd portfolio
 dotnet restore
 npm ci
 ```
@@ -29,17 +29,37 @@ npm run dev & dotnet watch
 
 1. Clone the project
 ```bash
-git clone https://github.com/sakuexe/fullstack-portfolio.git
+git clone https://github.com/sakuexe/portfolio.git
 ```
 
-2. Install docker
+2. Add a .env file to the root of the project
+
+```bash
+cd portfolio
+touch .env
+```
+
+The contents of the .env file should look like this:
+```
+ConnectionStrings__DefaultConnection="mongodb"
+ConnectionStrings__DatabaseName="portfolio"
+Admin__Username="root"
+Admin__Password="rootroot"
+Email__Address="from@email.com"
+Email__Password="one two three four"
+Email__Recipient="to@gmail.com"
+Logging__LogLevel__Default="Information"
+Logging__LogLevel__Microsoft.AspNetCore="Warning"
+```
+
+3. Install docker
 
 Guide for Ubuntu:
 [Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/)
 
-3. Update the environment variables in the docker-compose file
+4. Update the environment variables in the docker-compose file
 
-4. Add your domain to the Caddyfile
+5. Add your domain to the Caddyfile
 ```bash
 # Caddyfile
 yourdomain.com {
@@ -49,19 +69,19 @@ yourdomain.com {
 sed -i 's/sakukarttunen.com/yourdomain.cool/g' caddy/Caddyfile
 ```
 
-4. Run docker compose
+5. Run docker compose
 
 This will build the images and run the containers in the background
 ```bash
 docker compose up --build -d
 ```
 
-5. Visit your domain
+6. Visit your domain
 
 It should now have SSL certificates and have base data from the database.
 The initial build will take a while, when caddy has to get the certificates from Let's Encrypt.
 
-6. (Optional) Run the docker compose automatically on boot
+7. (Optional) Run the docker compose automatically on boot
 
 All you have to do is add a symbolic link to `/etc/systemd/system/` and enable the service
 ```bash
