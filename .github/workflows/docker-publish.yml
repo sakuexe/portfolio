@@ -84,7 +84,7 @@ jobs:
         uses: snok/container-retention-policy@v3.0.0
         with:
           account: user
-          token: ${{ secret.FINE_GRAINED_TOKEN }}
+          token: ${{ secrets.FINE_GRAINED_TOKEN }}
           image-names: "portfolio"
           tag-selection: untagged
           keep-n-most-recent: 3
