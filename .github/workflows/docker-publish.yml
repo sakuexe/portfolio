@@ -24,8 +24,8 @@ jobs:
           # caching can speed up the build time, but it could also slow it down
           # since there aren't that many dependencies
           # https://docs.github.com/en/actions/use-cases-and-examples/building-and-testing/building-and-testing-net#caching-dependencies
-          cache: true
-          cache-dependency-path: '**/packages.lock.json'
+          # cache: true
+          # cache-dependency-path: '**/packages.lock.json'
       - name: Install dependencies
         run: dotnet restore
       - name: Run tests with the dotnet CLI
