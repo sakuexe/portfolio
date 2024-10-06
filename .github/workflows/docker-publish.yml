@@ -81,10 +81,11 @@ jobs:
     steps:
       - name: Remove old packages
         # https://github.com/actions/delete-package-versions
-        uses: snok/container-retention-policy@v3.0.0
+        uses: actions/delete-package-versions@v5
         with:
-          account: user
-          token: ${{ secrets.FINE_GRAINED_TOKEN }}
-          image-names: portfolio
-          image-tags: '*'
-          keep-n-most-recent: 2
+          # package info
+          package-type: 'container'
+          package-name: 'portfolio'
+          # The number of latest versions to keep.
+          min-versions-to-keep: 2
+          delete-only-untagged-versions: 'true'
