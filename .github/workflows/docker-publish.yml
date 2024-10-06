@@ -83,6 +83,9 @@ jobs:
         # https://github.com/actions/delete-package-versions
         uses: actions/delete-package-versions@v5
         with:
+          # package info
+          package-name: portfolio
+          package-type: container
           # The number of latest versions to keep.
           min-versions-to-keep: 3
           delete-only-untagged-versions: true
