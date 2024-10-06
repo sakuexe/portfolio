@@ -29,5 +29,5 @@ jobs:
 
       - name: build and push docker image using buildx
         run: |
-          docker build -t ${{ env.GITHUB_REGISTRY }}/${{ github.actor }}/${{ github.repository }}:${{ env.DOCKER_TAG_NAME }} .
-          docker push ${{ env.GITHUB_REGISTRY }}/${{ github.actor }}/${{ github.repository }}:${{ env.DOCKER_TAG_NAME }}
+          docker build -t ${{ env.GITHUB_REGISTRY }}/${{ github.repository }}:${{ env.DOCKER_TAG_NAME }} .
+          docker push ${{ env.GITHUB_REGISTRY }}/${{ github.repository }}:${{ env.DOCKER_TAG_NAME }}
