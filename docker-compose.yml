@@ -1,6 +1,10 @@
 services:
   dotnet:
     container_name: dotnet
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dotnet-fullstack-portfolio.rule=Host(`localhost`)"
+      - "traefik.http.routers.dotnet-fullstack-portfolio.entrypoints=web"
     build:
       context: .
       dockerfile: Dockerfile
@@ -37,20 +41,24 @@ services:
     networks:
       - default
 
-  caddy:
-    container_name: caddy
-    image: caddy:2.7.6-alpine
-    restart: unless-stopped
+  traefik:
+    container_name: reverse-proxy
+    image: traefik:v3.1
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
     ports:
       - "80:80"
-      - "443:443"
-      - "8080:8080" # for the development
+      # Web UI
+      - "8080:8080"
     volumes:
-      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
-    depends_on:
-      - dotnet
+      # allow Traefik to listen for docker events
+      - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - default
+    depends_on: 
+      - dotnet
 
 networks:
   default:
