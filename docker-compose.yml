@@ -1,4 +1,19 @@
 services:
+  watchtower:
+    # watchtower checks for new pushes to the portfolio image
+    # and then pulls them automatically
+    # https://containrrr.dev/watchtower
+    image: containrrr/watchtower
+    command:
+      # https://containrrr.dev/watchtower/arguments
+      - "--label-enable"
+      - "--interval"
+      - "30"
+      # incrementally update the containers, instead of all at once
+      - "--rolling-restart"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
   traefik:
     container_name: traefik
     image: traefik:v3.1
@@ -42,6 +57,8 @@ services:
       # local development
       # - "traefik.http.routers.dotnet.rule=Host(`localhost`)"
       # - "traefik.http.routers.dotnet.entrypoints=websecure"
+      # enable watchtower
+      - "com.centurylinklabs.watchtower.enable=true"
     env_file: .env
     depends_on:
       - mongodb
