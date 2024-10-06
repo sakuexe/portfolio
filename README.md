@@ -32,24 +32,15 @@ npm run dev & dotnet watch
 git clone https://github.com/sakuexe/portfolio.git
 ```
 
-2. Add a .env file to the root of the project
+2. Use the `example.env` file to add a `.env` file to the root of the project
 
 ```bash
 cd portfolio
-touch .env
-```
-
-The contents of the .env file should look like this:
-```
-ConnectionStrings__DefaultConnection="mongodb"
-ConnectionStrings__DatabaseName="portfolio"
-Admin__Username="root"
-Admin__Password="rootroot"
-Email__Address="from@email.com"
-Email__Password="one two three four"
-Email__Recipient="to@gmail.com"
-Logging__LogLevel__Default="Information"
-Logging__LogLevel__Microsoft.AspNetCore="Warning"
+mv ./example.env.txt ./.env
+# edit the contents to your needs
+vi .env
+# or if you're a weirdo
+nano .env
 ```
 
 3. Install docker

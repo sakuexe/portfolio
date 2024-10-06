@@ -5,11 +5,31 @@ on:
     branches: ['main']
 
 env:
+  # Github registry
   GITHUB_REGISTRY: ghcr.io
   DOCKER_IMAGE: ${{ github.repository }}
   DOCKER_TAG_NAME: prod
+  # Dotnet
+  DOTNET_VERSION: 8.x
 
 jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET 8.x
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '${{ env.DOTNET_VERSION }}'
+          # caching can speed up the build time, but it could also slow it down
+          # since there aren't that many dependencies
+          # https://docs.github.com/en/actions/use-cases-and-examples/building-and-testing/building-and-testing-net#caching-dependencies
+          cache: true
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Run tests with the dotnet CLI
+        run: dotnet test fullstack-portfolio.Tests/
+
   build-push-docker-image:
     runs-on: ubuntu-latest
     permissions:
@@ -27,7 +47,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.FINE_GRAINED_TOKEN }}
 
-      - name: build and push docker image using buildx
+      - name: build and push docker image
         run: |
           docker build -t ${{ env.GITHUB_REGISTRY }}/${{ github.repository }}:${{ env.DOCKER_TAG_NAME }} .
           docker push ${{ env.GITHUB_REGISTRY }}/${{ github.repository }}:${{ env.DOCKER_TAG_NAME }}
