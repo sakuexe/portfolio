@@ -87,5 +87,5 @@ jobs:
           package-name: portfolio
           package-type: container
           # The number of latest versions to keep.
-          min-versions-to-keep: 3
+          min-versions-to-keep: 2
           delete-only-untagged-versions: true
