@@ -3,6 +3,16 @@ name: build-and-push-docker-image
 on:
   push:
     branches: ['main']
+    paths-ignore:
+      - docker-compose.yml
+      - '*.txt'
+      - '*.md'
+      - .github/*/*
+      - tailwindcss
+      - act
+      - package.json
+      - package-lock.json
+      - .gitignore
 
 env:
   # Github registry
