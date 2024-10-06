@@ -84,7 +84,7 @@ jobs:
         uses: actions/delete-package-versions@v5
         with:
           # package info
-          package-name: sakuexe/portfolio
+          package-name: ghcr.io/${{ env.DOCKER_IMAGE }}
           package-type: container
           # The number of latest versions to keep.
           min-versions-to-keep: 2
