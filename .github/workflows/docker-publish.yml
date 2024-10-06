@@ -25,6 +25,7 @@ jobs:
           # since there aren't that many dependencies
           # https://docs.github.com/en/actions/use-cases-and-examples/building-and-testing/building-and-testing-net#caching-dependencies
           cache: true
+          cache-dependency-path: '**/packages.lock.json'
       - name: Install dependencies
         run: dotnet restore
       - name: Run tests with the dotnet CLI
@@ -32,6 +33,8 @@ jobs:
 
   build-push-docker-image:
     runs-on: ubuntu-latest
+    # first make sure that the tests pass before pushing
+    needs: run-tests
     permissions:
       contents: read
       packages: write
