@@ -1,4 +1,7 @@
 # gitignore from https://gist.github.com/indyfromoz/4109296
+# env files
+.env
+.env.*
 # Compiled tailwindcss files
 tailwind.css
 # uploaded files

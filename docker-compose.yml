@@ -1,30 +1,12 @@
 services:
   dotnet:
     container_name: dotnet
+    image: ghcr.io/sakuexe/portfolio:prod
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.dotnet-fullstack-portfolio.rule=Host(`localhost`)"
       - "traefik.http.routers.dotnet-fullstack-portfolio.entrypoints=web"
-    build:
-      context: .
-      dockerfile: Dockerfile
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
-      # set the environment variable to connect to the mongodb container
-      # the value is in ConnectionStrings > DefaultConnection
-      - ConnectionStrings__DefaultConnection=mongodb
-      - ConnectionStrings__DatabaseName=portfolio
-      # the base(d) admin user for the application
-      - Admin__Username=root
-      - Admin__Password=rootroot
-      # email settings - do NOT use double quotes in the value (fuck)
-      - Email__Address=example@email.com
-      - Email__Password=one two three four
-      - Email__Recipient=me@gmail.com
-      # logging settings
-      - Logging__LogLevel__Default=Information
-      - Logging__LogLevel__Microsoft.AspNetCore=Warning
+    env_file: .env
     depends_on:
       - mongodb
     volumes:
@@ -62,7 +44,6 @@ services:
 
 networks:
   default:
-
 volumes:
   mongodb_data:
   uploaded_files:
