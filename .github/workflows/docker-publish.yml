@@ -6,10 +6,8 @@ on:
 
 env:
   GITHUB_REGISTRY: ghcr.io
-  DOCKER_IMAGE: ${{ env.GITHUB_REGISTRY }}/${{ github.actor }}/${{ github.repository }}
+  DOCKER_IMAGE: ${{ github.repository }}
   DOCKER_TAG_NAME: prod
-  DOCKER_BUILDKIT: 1
-  DOCKER_CLI_AGGREGATE: 1
 
 jobs:
   build-push-docker-image:
@@ -31,5 +29,5 @@ jobs:
 
       - name: build and push docker image using buildx
         run: |
-          docker build -t ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG_NAME }} .
-          docker push ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG_NAME }}
+          docker build -t ${{ env.GITHUB_REGISTRY }}/${{ github.actor }}/${{ github.repository }}:${{ env.DOCKER_TAG_NAME }} .
+          docker push ${{ env.GITHUB_REGISTRY }}/${{ github.actor }}/${{ github.repository }}:${{ env.DOCKER_TAG_NAME }}
