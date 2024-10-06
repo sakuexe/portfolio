@@ -6,7 +6,7 @@ on:
 
 env:
   GITHUB_REGISTRY: ghcr.io
-  DOCKER_IMAGE: ${{ env.GITHUB_REGISTRY }}/${{ github.repository.owner }}/${{ github.repository }}
+  DOCKER_IMAGE: ${{ env.GITHUB_REGISTRY }}/${{ github.actor }}/${{ github.repository }}
   DOCKER_TAG_NAME: prod
   DOCKER_BUILDKIT: 1
   DOCKER_CLI_AGGREGATE: 1
@@ -26,7 +26,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ${{ env.GITHUB_REGISTRY }}
-          username: ${{ github.repository.owner }}
+          username: ${{ github.actor }}
           password: ${{ secrets.FINE_GRAINED_TOKEN }}
 
       - name: build and push docker image using buildx
