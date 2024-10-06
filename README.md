@@ -76,3 +76,11 @@ docker logs portfolio-1
 
 It should now have SSL certificates and include base data in the database.
 The initial build will take a while, when traefik has to get the certificates from Let's Encrypt.
+
+## Other commands
+
+- Check the size of the docker image
+
+```bash
+docker manifest inspect -v ghcr.io/sakuexe/portfolio:prod | grep size | awk -F ':' '{sum+=$NF} END {print sum}' | numfmt --to=iec-i
+```
