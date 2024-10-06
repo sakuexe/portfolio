@@ -74,3 +74,14 @@ jobs:
         run: |
           docker build -t ${{ env.GITHUB_REGISTRY }}/${{ github.repository }}:${{ env.DOCKER_TAG_NAME }} .
           docker push ${{ env.GITHUB_REGISTRY }}/${{ github.repository }}:${{ env.DOCKER_TAG_NAME }}
+
+  delete-old-packages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove old packages
+        # https://github.com/actions/delete-package-versions
+        uses: actions/delete-package-versions@v5
+        with:
+          # The number of latest versions to keep.
+          min-versions-to-keep: 3
+          delete-only-untagged-versions: true
