@@ -3,16 +3,26 @@ name: build-and-push-docker-image
 on:
   push:
     branches: ['main']
-    paths-ignore:
-      - docker-compose.yml
-      - '*.txt'
-      - '*.md'
-      - .github/*/*
-      - tailwindcss
-      - act
-      - package.json
-      - package-lock.json
-      - .gitignore
+    # start the CI/CD pipeline only if these files
+    # have changed, otherwise ignore
+    paths:
+      - .github/**
+      - Components/**
+      - Controllers/**
+      - Data/**
+      - Models/**
+      - Properties/**
+      - Utils/**
+      - Views/**
+      - fullstack-portfolio.Tests/**
+      - wwwroot/**
+      - .dockerignore
+      - Dockerfile
+      - Program.cs
+      - _Imports.razor
+      - fullstack-portfolio.sln
+      - fullstack-portfolio.csproj
+      - tailwind.config.js
 
 env:
   # Github registry
