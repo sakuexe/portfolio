@@ -81,11 +81,10 @@ jobs:
     steps:
       - name: Remove old packages
         # https://github.com/actions/delete-package-versions
-        uses: actions/delete-package-versions@v4
+        uses: snok/container-retention-policy@v3.0.0
         with:
-          # package info
-          package-name: ghcr.io/${{ env.DOCKER_IMAGE }}
-          package-type: docker
-          # The number of latest versions to keep.
-          min-versions-to-keep: 2
-          delete-only-untagged-versions: true
+          account: user
+          token: ${{ secrets.FINE_GRAINED_TOKEN }}
+          image-names: portfolio
+          image-tags: '*'
+          keep-n-most-recent: 2
