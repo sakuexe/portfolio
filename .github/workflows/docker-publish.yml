@@ -33,59 +33,61 @@ env:
   DOTNET_VERSION: 8.x
 
 jobs:
-  run-tests:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup .NET 8.x
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '${{ env.DOTNET_VERSION }}'
-          # caching can speed up the build time, but it could also slow it down
-          # since there aren't that many dependencies
-          # https://docs.github.com/en/actions/use-cases-and-examples/building-and-testing/building-and-testing-net#caching-dependencies
-          # cache: true
-          # cache-dependency-path: '**/packages.lock.json'
-      - name: Install dependencies
-        run: dotnet restore
-      - name: Run tests with the dotnet CLI
-        run: dotnet test fullstack-portfolio.Tests/
-
-  build-push-docker-image:
-    runs-on: ubuntu-latest
-    # first make sure that the tests pass before pushing
-    needs: run-tests
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - name: checkout the repo
-        uses: actions/checkout@v4
-
-      - name: login to ghcr.io
-        # run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login -u ${{ github.repository.owner }} --password-stdin ${{ env.GITHUB_REGISTRY }}
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.GITHUB_REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.FINE_GRAINED_TOKEN }}
-
-      - name: build and push docker image
-        run: |
-          docker build -t ${{ env.GITHUB_REGISTRY }}/${{ github.repository }}:${{ env.DOCKER_TAG_NAME }} .
-          docker push ${{ env.GITHUB_REGISTRY }}/${{ github.repository }}:${{ env.DOCKER_TAG_NAME }}
+  # run-tests:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Setup .NET 8.x
+  #       uses: actions/setup-dotnet@v3
+  #       with:
+  #         dotnet-version: '${{ env.DOTNET_VERSION }}'
+  #         # caching can speed up the build time, but it could also slow it down
+  #         # since there aren't that many dependencies
+  #         # https://docs.github.com/en/actions/use-cases-and-examples/building-and-testing/building-and-testing-net#caching-dependencies
+  #         # cache: true
+  #         # cache-dependency-path: '**/packages.lock.json'
+  #     - name: Install dependencies
+  #       run: dotnet restore
+  #     - name: Run tests with the dotnet CLI
+  #       run: dotnet test fullstack-portfolio.Tests/
+  #
+  # build-push-docker-image:
+  #   runs-on: ubuntu-latest
+  #   # first make sure that the tests pass before pushing
+  #   needs: run-tests
+  #   permissions:
+  #     contents: read
+  #     packages: write
+  #   steps:
+  #     - name: checkout the repo
+  #       uses: actions/checkout@v4
+  #
+  #     - name: login to ghcr.io
+  #       # run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login -u ${{ github.repository.owner }} --password-stdin ${{ env.GITHUB_REGISTRY }}
+  #       uses: docker/login-action@v3
+  #       with:
+  #         registry: ${{ env.GITHUB_REGISTRY }}
+  #         username: ${{ github.actor }}
+  #         password: ${{ secrets.FINE_GRAINED_TOKEN }}
+  #
+  #     - name: build and push docker image
+  #       run: |
+  #         docker build -t ${{ env.GITHUB_REGISTRY }}/${{ github.repository }}:${{ env.DOCKER_TAG_NAME }} .
+  #         docker push ${{ env.GITHUB_REGISTRY }}/${{ github.repository }}:${{ env.DOCKER_TAG_NAME }}
 
   delete-old-packages:
     runs-on: ubuntu-latest
-    needs: build-push-docker-image
+    # needs: build-push-docker-image
     steps:
       - name: Remove old packages
         # https://github.com/actions/delete-package-versions
-        uses: actions/delete-package-versions@v5
+        uses: snok/container-retention-policy@v3.0.0
         with:
-          # package info
-          package-type: 'container'
-          package-name: 'portfolio'
-          # The number of latest versions to keep.
-          min-versions-to-keep: 2
-          delete-only-untagged-versions: 'true'
+          account: user
+          token: ${{ secret.FINE_GRAINED_TOKEN }}
+          image-names: "portfolio"
+          tag-selection: untagged
+          keep-n-most-recent: 3
+          cut-off: 1h
+          # dry-run: true
+
