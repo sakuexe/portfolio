@@ -19,19 +19,21 @@ services:
     image: traefik:v3.1
     command:
       - "--api.insecure=true"
-      - "--providers.docker"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
       - "--providers.docker.exposedbydefault=false"
       # TLS (https)
-      - "--entrypoints.websecure.address=:443"
-      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
       - "--certificatesresolvers.myresolver.acme.email=saku.karttunen@gmail.com"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
       # http redirection
-      - "--entrypoints.web.address=:80"
       - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
       - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
-      # local development
-      # - "--entrypoints.web.address=:80"
+      # logs
+      - "--log.level=WARN"
+      - "--log.format=json"
     ports:
       - "80:80"
       - "443:443"
@@ -71,7 +73,7 @@ services:
       - "80"
       - "443"
     deploy:
-      replicas: 3 # adjust as needed
+      replicas: 1 # adjust as needed
 
   mongodb:
     container_name: mongodb
