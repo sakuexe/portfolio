@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /login/
+Disallow: /secrets/
+Sitemap: https://sakukarttunen.com/sitemap.xml
