@@ -14,17 +14,19 @@ return path.Split("wwwroot/")[1];
 }
 
 <section id="experience" class="space-y-6 py-20 max-w-content mx-auto no-container">
+
   <div class="max-w-4xl space-y-4 section-padding">
     <div class="subheader">
       <p><span>// 05</span> Experience</p>
       <h2>Professional Experience</h2>
     </div>
     <p>
-      Leo in netus enim sed auctor. Enim dolor elementum velit aliquam enim. In feugiat
-      diam bibendum egestas amet ullamcorper ipsum. Massa semper enim mauris leo.
-      At fusce nulla ut enim aliquet purus praesent eleifend.
+      Here is a list of my prior professional experiences. This includes
+      many different types of jobs and fields. I am willing to talk more
+      about these if you are interested, so remember to ask!
     </p>
   </div>
+  
   <div class="grid gap-y-10">
     @foreach (var (exp, index) in Model.Select((val, i) => (val, i)))
     {
