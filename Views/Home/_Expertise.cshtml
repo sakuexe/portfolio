@@ -14,61 +14,62 @@
   }
 }
 
-  <section id="expertise">
-    <div class="subheader text-center mb-8">
-      <p><span>// 02</span> Expertise</p>
-      <h2>What Do I Do?</h2>
-    </div>
-    <div class="flex flex-wrap gap-4 justify-center max-w-content mx-auto">
+<section id="expertise">
+  <div class="subheader text-center mb-8">
+    <p><span>// 02</span> Expertise</p>
+    <h2>What Do I Do?</h2>
+  </div>
+  <div class="flex flex-wrap gap-4 justify-center max-w-content mx-auto">
 
-      @foreach (var expertise in Model)
-      {
-      <!-- TODO: Fetch experiences from the database -->
-      <div class="flex flex-col flex-grow outline outline-2 outline-primary-300 
-      max-w-md p-6 space-y-3 drop-shadow-lg backdrop-brightness-90 backdrop-blur-sm">
-        <!-- card header -->
-        <div class="flex items-center gap-x-5">
-          <div class="w-16 fill-primary-100">
+    @foreach (var expertise in Model)
+    {
+    <div class="flex flex-col flex-grow justify-center outline outline-2 outline-primary-300 
+      max-w-md p-6 gap-y-3 drop-shadow-lg backdrop-brightness-90 backdrop-blur-sm">
+      <!-- card header -->
+      <div class="flex items-center gap-x-5">
+        <div class="w-16 fill-primary-100">
           @if (expertise.Icon?.EndsWith(".svg") == true)
           {
-            @Html.Raw(SvgUtils.SanitizeSvg(expertise.Icon))
+          @Html.Raw(SvgUtils.SanitizeSvg(expertise.Icon))
           }
           else {
           <img src="@GetIcon(expertise.Icon)" loading="lazy" decoding="async"
             alt="@expertise.Title -icon" class="w-16" >
           }
-          </div>
-          <h3 class="text-3xl font-bold">
-            @expertise.Title
-          </h3>
         </div>
-        <div class="flex gap-x-3">
-          <!-- the html indenting style -->
-          <div class="opacity-75 flex flex-col items-center mr-auto select-none">
-            <pre>&lt;p&gt;</pre>
-            <div class="h-full border border-primary-100 opacity-75"></div>
-            <pre>&lt;/p&gt;</pre>
-          </div>
-          <!-- card description -->
-          <p class="py-6 w-full">
-            @expertise.Description
-          </p>
-        </div>
+        <h3 class="text-3xl font-bold">
+          @expertise.Title
+        </h3>
       </div>
-      }
 
+      <!-- card body -->
+      <div class="flex gap-x-3">
+        <!-- the html indenting style -->
+        <div class="opacity-75 flex flex-col items-center mr-auto select-none">
+          <pre>&lt;p&gt;</pre>
+          <div class="h-full border border-primary-100 opacity-75"></div>
+          <pre>&lt;/p&gt;</pre>
+        </div>
+        <!-- card description -->
+        <p class="py-6 w-full">
+          @expertise.Description
+        </p>
+      </div>
     </div>
-    <div class="absolute top-0 left-0 w-full h-full -z-10 bg-primary opacity-75 mix-blend-darken"></div>
-  </section>
-
-  <style>
-    #expertise {
-      position: relative;
-      isolation: isolate;
-      background: url("/images/code.webp") no-repeat -1rem center;
-      background-size: cover;
-      /* parallax effect */
-      background-attachment: fixed;
-      box-shadow: inset 0 0 4rem theme("colors.primary.DEFAULT");
     }
-  </style>
+
+  </div>
+  <div class="absolute top-0 left-0 w-full h-full -z-10 bg-primary opacity-75 mix-blend-darken"></div>
+</section>
+
+<style>
+#expertise {
+  position: relative;
+  isolation: isolate;
+  background: url("/images/code.webp") no-repeat -1rem center;
+  background-size: cover;
+  /* parallax effect */
+  background-attachment: fixed;
+  box-shadow: inset 0 0 4rem theme("colors.primary.DEFAULT");
+}
+</style>
