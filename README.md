@@ -14,21 +14,66 @@
 1. Clone the repository
 ```bash
 git clone https://github.com/sakuexe/portfolio.git
+cd portfolio
 ```
 
 2. Install the dependencies
+
+**OPTIONAL**: You can make this easier using the provided nix flake. it has a 
+development shell for this project that you can use with the following command.
+
 ```bash
-cd portfolio
+nix flake develop
+```
+
+Then install the packages needed
+
+```bash
 dotnet restore
 npm ci
 ```
 
-3. Run the project
+3. Use the dev-composer.yml to run mongodb
+
+```bash
+docker compose -f dev-composer.yml up -d
+```
+
+4. Add a `appsettings.Development.json` file
+
+The file should include the following information. You can change the values
+to your liking. But do not modify the keys.
+
+```json
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "ConnectionStrings": {
+    "DefaultConnection": "localhost",
+    "DatabaseName": "portfolio"
+  },
+  "Admin": {
+    "Username": "root",
+    "Password": "rootroot"
+  },
+  "Email": {
+    "Address": "from@email.com",
+    "Password": "aaaa bbbb cccc dddd",
+    "Recipient": "to@email.com"
+  }
+}
+```
+
+5. Run the project
 ```bash
 dotnet run
 ```
 
-4. For Development, run the project in watch mode
+6. For Development, run the project in watch mode
 ```bash
 # run the project in watch mode
 npm run dev & dotnet watch
