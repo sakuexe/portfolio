@@ -83,20 +83,13 @@ string SeoImage = "/images/og-image.webp";
       }
     </ul>
   </nav>
+
   <main role="main" class="pb-20 min-h-[90svh] overflow-x-clip">
     @RenderBody()
   </main>
 
-  <footer class="max-w-5xl mx-auto p-5 flex flex-col items-center sm:px-10">
-    <p class="opacity-75">&copy; 2024 Saku Karttunen</p>
-      <div class="flex gap-4">
-        <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-        <a href="#expertise">Expertise</a>
-        <a href="#skills">Skills</a>
-        <a href="#portfolio">Portfolio</a>
-        <a href="#experience">Experience</a>
-    </div>
-  </footer>
+  <partial name="_Footer" />
+
   <script src="~/js/site.js" asp-append-version="true"></script>
   <base href="~/">
   <script src="~/js/navigation.js" async></script>
