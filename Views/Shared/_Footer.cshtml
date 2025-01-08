@@ -1,5 +1,8 @@
+@{
+  string currentYear = DateTime.Now.Year.ToString();
+}
 <footer class="max-w-5xl mx-auto p-5 flex flex-col items-center sm:px-10">
-  <p class="opacity-75">&copy; 2024 Saku Karttunen</p>
+  <p class="opacity-75">&copy; 2024-@currentYear Saku Karttunen</p>
   <div class="flex gap-4 flex-wrap justify-center">
     <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
     <a href="#expertise">Expertise</a>

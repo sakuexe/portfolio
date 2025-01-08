@@ -39,50 +39,8 @@ string SeoImage = "/images/og-image.webp";
   <div id="components-reconnect-modal" class="my-reconnect-modal components-reconnect-hide">
   </div>
 
-  <nav class="py-4 px-5 fixed top-0 left-0 w-full z-20 bg-primary/30 backdrop-blur-lg 
-      min-w-[356px] sm:px-10">
-
-    <div class="flex justify-between lg:hidden">
-      <a asp-controller="Home" asp-action="Index" class="no-underline">
-        <span class="font-bold">&lt;SK/&gt;</span> @ViewData["Title"]
-      </a>
-      <button type="button" aria-label="Navigation menu toggle" class="flex flex-col gap-2 items-end relative w-10
-        [&>div]:hover:w-10 [&>div]:transition-all">
-        <div class="h-0.5 w-full rounded-full bg-primary-100 delay-100"></div>
-        <div class="h-0.5 w-3/4 rounded-full bg-primary-100"></div>
-        <div class="h-0.5 w-2/4 rounded-full bg-primary-100 delay-100"></div>
-      </button>
-    </div>
-
-    <ul class="dropdown-menu hidden flex-col gap-4 max-w-5xl mx-auto text-center py-8
-        [&>li]:py-4 [&>li]:lg:py-0 lg:flex lg:flex-row lg:py-1">
-        <li class="hidden lg:block">
-          <a asp-controller="Home" asp-action="Index" class="no-underline font-bold">
-            &lt;SK/&gt; <span class="lg:hidden">@ViewData["Title"]</span>
-          </a>
-        </li>
-
-      <li class="opacity-25 hidden lg:block">|</li>
-
-      <li><a href="#expertise" class="no-underline">Expertise</a></li>
-      <li><a href="#skills" class="no-underline">Skills</a></li>
-      <li><a href="#portfolio" class="no-underline">Portfolio</a></li>
-      <li><a href="#experience" class="no-underline">Experience</a></li>
-      <li><a href="#contacts" class="no-underline">Contacts</a></li>
-
-      <li><hr class="border-primary-700 opacity-75 max-w-20 mx-auto lg:hidden"></li>
-
-      @if (User.Identity?.IsAuthenticated == true)
-      {
-      <li><a asp-controller="Dashboard" asp-action="Index" class="no-underline">Dashboard</a></li>
-      <li><a asp-controller="Login" asp-action="Logout" class="no-underline">Logout</a></li>
-      }
-      else
-      {
-      <li><a asp-controller="Login" asp-action="Index" class="no-underline">Login</a></li>
-      }
-    </ul>
-  </nav>
+  <partial name="_Nav" />
+  <partial name="_MobileNav" />
 
   <main role="main" class="pb-20 min-h-[90svh] overflow-x-clip">
     @RenderBody()

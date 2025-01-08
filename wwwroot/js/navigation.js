@@ -1,24 +1,37 @@
-const navigation = document.querySelector('nav');
-const toggleButton = navigation?.querySelector('button');
-const dropdown = navigation?.querySelector('.dropdown-menu');
-const navLinks = navigation?.querySelectorAll('a');
+/** @type {HTMLElement | null}*/
+const mobileNavigation = document.querySelector('#mobile-navigation');
+if (!mobileNavigation) throw new Error("element `#mobile-navigation` not found");
 
-toggleButton?.addEventListener('click', () => {
-  dropdown?.classList.toggle('hidden');
+/** @type {HTMLButtonElement | null}*/
+const toggleButton = mobileNavigation.querySelector('button');
+if (!toggleButton) throw new Error("element `#mobile-navigation button` not found");
+
+/** @type {HTMLDivElement | null}*/
+const dropdown = mobileNavigation.querySelector('.dropdown-menu');
+if (!dropdown) throw new Error("element `#mobile-navigation .dropdown-menu` not found");
+
+/** @type {NodeListOf<HTMLAnchorElement> | null}*/
+const navLinks = mobileNavigation.querySelectorAll('a');
+if (navLinks.length <= 0) throw new Error("no link elements found inside `#mobile-navigation`");
+
+toggleButton.addEventListener('click', () => {
+  dropdown.classList.toggle('hidden');
   toggleButtonAnimation();
 });
 
-navLinks?.forEach((link) => {
+navLinks.forEach((link) => {
   link.addEventListener('click', () => {
-    dropdown?.classList.toggle('hidden');
+    dropdown.classList.toggle('hidden');
     toggleButtonAnimation();
   });
 });
 
 function toggleButtonAnimation() {
-  const bars = toggleButton?.querySelectorAll('div');
-  if (!bars || bars.length < 3) return;
-  bars?.forEach((bar) => {
+  // @ts-ignore - toggle button nullability is already checked
+  const bars = toggleButton.querySelectorAll('div');
+  if (bars.length < 3) throw new Error(`not enough bars found inside toggleButton. Found: ${bars.length}`);
+
+  bars.forEach((bar) => {
     bar.classList.toggle("absolute");
     bar.classList.toggle("inset-0");
     bar.classList.toggle("m-auto");
