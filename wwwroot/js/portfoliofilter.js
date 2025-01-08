@@ -15,7 +15,6 @@ filters?.forEach(filter => {
 /** @param {HTMLLIElement} filter */
 function setActiveFilter(filter) {
   const currentActiveFilter = document.querySelector('#portfolio-filter > li > span.text-secondary-400');
-  console.log(currentActiveFilter);
   currentActiveFilter?.classList.remove(...activeClasses);
   currentActiveFilter?.classList.add('underline');
   filter.querySelector("span")?.classList.add(...activeClasses);
