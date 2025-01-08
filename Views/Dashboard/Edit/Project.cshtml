@@ -153,10 +153,10 @@ string ImagePath = ViewUtils.TrimPath(Model.ImageUrl ?? string.Empty);
 </section>
 
 @section Scripts {
-<script src="~/js/addteammate.js"></script>
-<script src="~/js/stringlist.js"></script>
-<script src="~/js/savechanges.js" defer></script>
-<script src="~/js/modelimage.js" defer></script>
+<script src="~/js/addteammate.js" asp-append-version="true" async></script>
+<script src="~/js/stringlist.js" asp-append-version="true" async></script>
+<script src="~/js/savechanges.js" asp-append-version="true" defer></script>
+<script src="~/js/modelimage.js" asp-append-version="true" defer></script>
 }
 
 @section Styles {

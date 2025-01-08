@@ -43,8 +43,8 @@ var id = @Model.GetType().GetProperty("_id")?.GetValue(Model);
 </section>
 
 @section Scripts {
-  <script src="~/js/stringlist.js"></script>
-  <script src="~/js/savechanges.js"></script>
+  <script src="~/js/stringlist.js" asp-append-version="true"></script>
+  <script src="~/js/savechanges.js" asp-append-version="true"></script>
 }
 
 @section Styles {
