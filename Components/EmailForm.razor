@@ -49,28 +49,33 @@
 
 	<label class="flex flex-col">
 		Name
-		<InputText @bind-Value="model.Name" class="bg-transparent border-2 border-primary-700 px-4 py-2 rounded-md" />
+		<InputText @bind-Value="model.Name" placeholder="Firstname Lastname"
+      class="bg-transparent border-2 border-primary-700 px-4 py-2 rounded-md
+      motion-safe:transition-all focus:outline focus:outline-1 focus:outline-accent-200" />
 		<ValidationMessage For="@(() => model.Name)" class="text-accent" />
 	</label>
 
 	<label class="flex flex-col">
 		Email
-		<InputText @bind-Value="model.FromAddress"
-			class="bg-transparent border-2 border-primary-700 px-4 py-2 rounded-md" />
+		<InputText @bind-Value="model.FromAddress" placeholder="example@gmail.com"
+			class="bg-transparent border-2 border-primary-700 px-4 py-2 rounded-md
+      motion-safe:transition-all focus:outline focus:outline-1 focus:outline-accent-200" />
 		<ValidationMessage For="@(() => model.FromAddress)" class="text-accent" />
 	</label>
 
 	<label class="flex flex-col">
 		Subject
-		<InputText @bind-Value="model.Subject"
-			class="bg-transparent border-2 border-primary-700 px-4 py-2 rounded-md" />
+		<InputText @bind-Value="model.Subject" placeholder="Cool website!"
+			class="bg-transparent border-2 border-primary-700 px-4 py-2 rounded-md
+      motion-safe:transition-all focus:outline focus:outline-1 focus:outline-accent-200" />
 		<ValidationMessage For="@(() => model.Subject)" class="text-accent" />
 	</label>
 
 	<label class="flex flex-col">
 		Message
-		<InputTextArea @bind-Value="model.Message"
-			class="bg-transparent border-2 border-primary-700 px-4 py-2 rounded-md min-h-32" />
+		<InputTextArea @bind-Value="model.Message" placeholder="The message..."
+			class="bg-transparent border-2 border-primary-700 px-4 py-2 rounded-md min-h-32
+      motion-safe:transition-all focus:outline focus:outline-1 focus:outline-accent-200" />
 		<ValidationMessage For="@(() => model.Message)" class="text-accent" />
 	</label>
 
@@ -78,11 +83,13 @@
 
 	<hr class="border-primary-700 my-4 opacity-75" />
 
-	<button type="submit" class="bg-gradient-to-r from-secondary-900 to-accent rounded-md px-4 py-2">
+	<button type="submit" 
+    class="bg-gradient-to-r from-secondary-900 to-accent rounded-md px-4 py-2
+    motion-safe:transition-all hover:brightness-125">
 		Send
 	</button>
-	<button type="submit" class="border-2 border-primary-700 rounded-md 
-          px-4 py-2">
+	<button type="submit" class="border-2 border-primary-700 rounded-md px-4 py-2
+    motion-safe:transition-all hover:bg-primary-700">
 		Clear
 	</button>
 
