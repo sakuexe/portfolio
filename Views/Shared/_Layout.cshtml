@@ -39,18 +39,21 @@ string SeoImage = "/images/og-image.webp";
   <div id="components-reconnect-modal" class="my-reconnect-modal components-reconnect-hide">
   </div>
 
+  <!-- navigation -->
   <partial name="_Nav" />
   <partial name="_MobileNav" />
 
+  <!-- the main content of the page -->
   <main role="main" class="pb-20 min-h-[90svh] overflow-x-clip">
     @RenderBody()
   </main>
 
+  <!-- footer -->
   <partial name="_Footer" />
 
+  <!-- scripts -->
   <script src="~/js/site.js" asp-append-version="true"></script>
   <base href="~/">
-  <script src="~/js/navigation.js" async></script>
   @await RenderSectionAsync("Scripts", required: false)
 </body>
 
