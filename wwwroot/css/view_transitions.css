@@ -1,0 +1,99 @@
+::root {
+  --view-transition-duration: 0.5s;
+}
+
+/* view-transition */
+@view-transition {
+  navigation: auto;
+}
+
+/* Customize the default animation behavior */
+::view-transition-group(root) {
+  animation-duration: calc(var(--view-transition-duration) * 1.5);
+}
+
+::view-transition-group(swipe) {
+  animation-duration: calc(var(--view-transition-duration) * 1.5);
+}
+
+/* Create a custom animation */
+
+@keyframes move-out {
+  from {
+    transform: translateX(0%);
+  }
+
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes move-in {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0%);
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+/* Apply the custom animation to the old and new page states */
+
+::view-transition-old(root) {
+  animation: fade var(--view-transition-duration) ease-in-out forwards;
+
+}
+
+::view-transition-new(root) {
+  animation: fade var(--view-transition-duration) ease-in-out reverse;
+}
+
+::view-transition-old(swipe) {
+  animation: var(--view-transition-duration) ease-in both move-out;
+
+}
+
+::view-transition-new(swipe) {
+  animation: var(--view-transition-duration) ease-in both move-in;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(root),
+  ::view-transition-group(swipe),
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  ::view-transition-old(swipe),
+  ::view-transition-new(swipe) {
+    animation-duration: 0s !important;
+    /* Alternatively, you can significantly reduce the duration */
+    /* animation-duration: 0.1s !important; */
+  }
+}
+
+/* 
+* Keep the same element in place when the view changes 
+* - remember to use the check for the prefers-reduced-motion media query
+* if some people are sensitive to motion
+*/
+@media not (prefers-reduced-motion: reduce) {
+  nav {
+    view-transition-name: navigation;
+  }
+
+  /*
+  #portfolio-items > a:first-child > img {
+    view-transition-name: image-one;
+  }
+  */
+}

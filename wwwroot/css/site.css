@@ -7,6 +7,10 @@
   --primary-700: theme("colors.primary.700");
 }
 
+::selection {
+  background-color: #7054ac;
+}
+
 .btn:focus,
 .btn:active:focus,
 .btn-link.nav-link:focus,
