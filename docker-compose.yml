@@ -53,7 +53,7 @@ services:
     image: ghcr.io/sakuexe/portfolio:prod
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.dotnet.rule=Host(`sakukarttunen.com`) || Host(`fs.sakukarttunen.com`)"
+      - "traefik.http.routers.dotnet.rule=Host(`sakukarttunen.com`) || Host(`fs.sakukarttunen.com`) || Host(`www.sakukarttunen.com`)"
       - "traefik.http.routers.dotnet.entrypoints=websecure"
       - "traefik.http.routers.dotnet.tls.certresolver=myresolver"
       # local development
