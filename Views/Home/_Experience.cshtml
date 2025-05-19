@@ -11,6 +11,11 @@ if (!File.Exists(path))
 return DefaultImage;
 return path.Split("wwwroot/")[1];
 }
+
+var orderedExperiences = Model
+    .OrderByDescending(e => e.EndDate ?? DateOnly.MaxValue) // NULL EndDate = highest = appear first
+    .ThenByDescending(e => e.StartDate) // More recent StartDate first if multiple null end dates
+    .ToList();
 }
 
 <section id="experience" class="space-y-6 py-20 max-w-content mx-auto no-container">
@@ -28,7 +33,7 @@ return path.Split("wwwroot/")[1];
   </div>
   
   <div class="grid gap-y-10">
-    @foreach (var (exp, index) in Model.Select((val, i) => (val, i)))
+    @foreach (var (exp, index) in orderedExperiences.Select((val, i) => (val, i)))
     {
     <div class="grid gap-4 lg:grid-cols-2">
       <div class="exp-header flex flex-col justify-center py-4 overflow-clip relative section-padding
