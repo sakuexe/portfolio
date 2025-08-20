@@ -1,0 +1,76 @@
+<nav id="mobile-navigation" class="py-4 px-5 fixed top-0 left-0 w-full z-20 bg-primary/30 backdrop-blur-lg 
+  min-w-[356px] sm:px-10 lg:hidden">
+
+  <div class="flex justify-between lg:hidden">
+    <a href="/" class="no-underline">
+      <span class="font-bold">&lt;SK/&gt;</span> sakukarttunen.com
+    </a>
+    <button type="button" aria-label="Navigation menu toggle" class="flex flex-col gap-2 items-end relative w-10
+      [&>div]:hover:w-10 [&>div]:transition-all">
+      <div class="h-0.5 w-full rounded-full bg-primary-100 delay-100"></div>
+      <div class="h-0.5 w-3/4 rounded-full bg-primary-100"></div>
+      <div class="h-0.5 w-2/4 rounded-full bg-primary-100 delay-100"></div>
+    </button>
+  </div>
+
+  <ul class="dropdown-menu hidden flex-col gap-4 max-w-5xl mx-auto text-center py-8
+    [&>li]:py-4">
+
+    <li><a href="#expertise" class="no-underline">Expertise</a></li>
+    <li><a href="#skills" class="no-underline">Skills</a></li>
+    <li><a href="#portfolio" class="no-underline">Portfolio</a></li>
+    <li><a href="#experience" class="no-underline">Experience</a></li>
+    <li><a href="#contacts" class="no-underline">Contacts</a></li>
+
+    <li>
+      <hr class="border-primary-700 opacity-75 max-w-20 mx-auto">
+    </li>
+  </ul>
+</nav>
+
+<script>
+const mobileNavigation: HTMLElement | null = document.querySelector('#mobile-navigation');
+if (!mobileNavigation) throw new Error("element `#mobile-navigation` not found");
+
+const toggleButton: HTMLButtonElement | null = mobileNavigation.querySelector('button');
+if (!toggleButton) throw new Error("element `#mobile-navigation button` not found");
+
+const dropdown: HTMLDivElement | null = mobileNavigation.querySelector('.dropdown-menu');
+if (!dropdown) throw new Error("element `#mobile-navigation .dropdown-menu` not found");
+
+const navLinks: NodeListOf<HTMLAnchorElement> | null = mobileNavigation.querySelectorAll('a');
+if (navLinks.length <= 0) throw new Error("no link elements found inside `#mobile-navigation`");
+
+toggleButton.addEventListener('click', () => {
+  dropdown.classList.toggle('hidden');
+  toggleButtonAnimation();
+});
+
+navLinks.forEach((link) => {
+  link.addEventListener('click', () => {
+    dropdown.classList.toggle('hidden');
+    toggleButtonAnimation();
+  });
+});
+
+function toggleButtonAnimation() {
+  if (!toggleButton) throw new Error("element `#mobile-navigation button` not found");
+
+  const bars = toggleButton.querySelectorAll('div');
+  if (bars.length < 3) throw new Error(`not enough bars found inside toggleButton. Found: ${bars.length}`);
+
+  bars.forEach((bar) => {
+    bar.classList.toggle("absolute");
+    bar.classList.toggle("inset-0");
+    bar.classList.toggle("m-auto");
+    bar.classList.toggle("w-3/4");
+  });
+  // hide the middle bar
+  bars[1].classList.toggle("opacity-0");
+  bars[1].classList.toggle("delay-100");
+  // rotate the other bars 45 degrees
+  bars[0].classList.toggle("rotate-45");
+  bars[0].classList.toggle("w-full");
+  bars[2].classList.toggle("-rotate-45");
+}
+</script>

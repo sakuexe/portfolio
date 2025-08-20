@@ -1,10 +1,13 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import Hero from "../components/Hero.astro";
+
+import "../styles/global.css";
 
 const res = await fetch("http://localhost:46118/umbraco/delivery/api/v2/content/item/");
 const helloworld = await res.json();
 ---
 
 <Layout>
-  <p>{helloworld.properties.greeting ?? "could not fetch data from backend"}</p>
+  <Hero></Hero>
 </Layout>

@@ -1,0 +1,160 @@
+@import "tailwindcss";
+
+/* new theme section is the replacement for tailwind.config.js > theme */
+@theme {
+  --breakpoint-xs: 512px;
+  /*primary color*/
+  --color-primary-50: #f7f6f9;
+  --color-primary-100: #efedf1;
+  --color-primary-200: #dad7e0;
+  --color-primary-300: #b9b4c5;
+  --color-primary-400: #928ba5;
+  --color-primary-500: #756d8a;
+  --color-primary-600: #5f5772;
+  --color-primary-700: #4e475d;
+  --color-primary-800: #433e4e;
+  --color-primary-900: #3b3644;
+  --color-primary-950: #242129;
+  /*main colors*/
+  --color-primary: var(--color-primary-950);
+  /*accent color*/
+  --color-secondary-50: var(--color-violet-50);
+  --color-secondary-100: var(--color-violet-100);
+  --color-secondary-200: var(--color-violet-200);
+  --color-secondary-300: var(--color-violet-300);
+  --color-secondary-400: var(--color-violet-400);
+  --color-secondary-500: var(--color-violet-500);
+  --color-secondary-600: var(--color-violet-600);
+  --color-secondary-700: var(--color-violet-700);
+  --color-secondary-800: var(--color-violet-800);
+  --color-secondary-900: var(--color-violet-900);
+  --color-secondary-950: var(--color-violet-950);
+  /*main colors*/
+  --color-secondary: var(--color-secondary-700);
+  --color-secondary-text: var(--color-secondary-500);
+  
+  /* Fonts (replace the defaults) */
+  --font-sans: Montserrat, sans-serif;
+  --font-mono: "Fira Code", monospace;
+
+  /* Font sizes with default line-heights */
+  --text-header: clamp(3rem, 10vw, 5.5rem);
+  --text-header--line-height: 1;
+
+  --text-subheader: clamp(2.5rem, 8vw, 3rem);
+  --text-subheader--line-height: 1;
+
+  /* Box shadows */
+  --shadow-sharp: -12px 12px 0 currentColor;
+  --shadow-sharp-lg: -20px 20px 0 currentColor;
+}
+
+::selection {
+  background-color: #7054ac;
+}
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+  box-shadow:
+    0 0 0 0.1rem white,
+    0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+  scroll-behavior: smooth;
+  scrollbar-color: theme("colors.primary.400") transparent;
+  scrollbar-width: thin;
+}
+
+body>main>*:not(.no-container) {
+  @apply px-5 py-20 sm:px-10
+}
+
+.section-padding {
+  @apply px-5 sm:px-10
+}
+
+/* import fonts from the wwwroot/fonts/ folder */
+@font-face {
+  font-family: "Montserrat";
+  src: local("Montserrat"), url("/fonts/montserrat_variable.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  /* prevent text not showing before font is loaded */
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Fira Code";
+  src: url("/fonts/firacode_variable.ttf") format("truetype");
+  font-weight: 300 700;
+  font-style: monospace;
+  /* prevent text not showing before font is loaded */
+  font-display: swap;
+}
+
+.subheader {
+  line-height: 1;
+}
+
+.subheader>h1,
+.subheader>h2 {
+  font-family: "Montserrat", sans-serif;
+  font-size: clamp(2.5rem, 8vw, 3rem);
+  font-weight: bold;
+  line-height: 1;
+}
+
+.subheader>p>span {
+  color: theme("colors.secondary.400");
+}
+
+a:not(.btn):not(.no-underline) {
+  text-decoration: underline;
+  text-decoration-thickness: 0.2rem;
+  text-underline-offset: 0.3rem;
+  text-decoration-color: --color-secondary-400;
+  @apply motion-safe:transition-all;
+}
+
+a:not(.btn):not(.no-underline):hover {
+  text-decoration-color: --color-secondary-700
+}
+
+.btn {
+  @apply py-2 px-4 rounded-md;
+  font-weight: 600;
+  display: block;
+  min-width: max-content;
+  text-align: center;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+.grid-pattern {
+  --pattern-size: 35px;
+  background-image: url("/images/grid-pattern.svg");
+  background-size: var(--pattern-size);
+  background-color: transparent;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: pan 20s linear infinite;
+  }
+}
+
+@keyframes pan {
+  0% {
+    background-position: 0 0;
+  }
+
+  100% {
+    background-position: calc(var(--pattern-size) * 10) calc(var(--pattern-size) * -10);
+  }
+}

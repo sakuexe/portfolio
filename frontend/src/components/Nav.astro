@@ -1,0 +1,61 @@
+<nav class="py-4 px-5 fixed top-0 left-0 w-full z-20 bg-primary/30 backdrop-blur-lg 
+  min-w-[356px] hidden sm:px-10 lg:block">
+
+  <div class="flex justify-between lg:hidden">
+    <a href="/" class="no-underline">
+      <span class="font-bold">&lt;SK/&gt;</span> sakukarttunen.com
+    </a>
+    <button type="button" aria-label="Navigation menu toggle" class="flex flex-col gap-2 items-end relative w-10
+      [&>div]:hover:w-10 [&>div]:transition-all">
+      <div class="h-0.5 w-full rounded-full bg-primary-100 delay-100"></div>
+      <div class="h-0.5 w-3/4 rounded-full bg-primary-100"></div>
+      <div class="h-0.5 w-2/4 rounded-full bg-primary-100 delay-100"></div>
+    </button>
+  </div>
+
+  <ul class="flex-col gap-4 max-w-5xl mx-auto text-center py-8
+    [&>li]:py-4 [&>li]:lg:py-0 lg:flex lg:flex-row lg:py-1">
+    <li>
+      <a 
+        asp-controller="Home"
+        asp-action="Index"
+        class="no-underline font-bold from-secondary-900 to-accent bg-clip-text text-transparent
+        bg-primary-100 motion-safe:transition-all hover:bg-gradient-to-r">
+        &lt;SK/&gt;
+      </a>
+    </li>
+
+    <li class="opacity-25 hidden lg:block">|</li>
+
+    <li>
+      <a href="#expertise" class="no-underline decoration-secondary underline-offset-4 decoration-2
+        motion-safe:transition-all hover:underline">
+        Expertise
+      </a>
+    </li>
+    <li>
+      <a href="#skills" class="no-underline decoration-secondary underline-offset-4 decoration-2
+        motion-safe:transition-all hover:underline">
+        Skills
+      </a>
+    </li>
+    <li>
+      <a href="#portfolio" class="no-underline decoration-secondary underline-offset-4 decoration-2
+        motion-safe:transition-all hover:underline">
+        Portfolio
+      </a>
+    </li>
+    <li>
+      <a href="#experience" class="no-underline decoration-secondary underline-offset-4 decoration-2
+        motion-safe:transition-all hover:underline">
+        Experience
+      </a>
+    </li>
+    <li>
+      <a href="#contacts" class="no-underline decoration-secondary underline-offset-4 decoration-2
+        motion-safe:transition-all hover:underline">
+        Contacts
+      </a>
+    </li>
+  </ul>
+</nav>
