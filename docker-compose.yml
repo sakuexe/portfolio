@@ -1,0 +1,37 @@
+services:
+  backend:
+    image: backend
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ConnectionStrings__umbracoDbDSN=Server=umb_database;Database=umbracoDb;User Id=sa;Password=${DB_PASSWORD};TrustServerCertificate=true;
+        - ConnectionStrings__umbracoDbDSN_ProviderName=Microsoft.Data.SqlClient
+    volumes:
+      - umb_media:/app/wwwroot/media
+      - umb_logs:/app/umbraco/Logs
+      - umb_data:/app/umbraco
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+
+    restart: always
+    ports:
+      - "44372:8080"
+    networks:
+      - umbnet
+
+# These volumes are all made as bind mounts, meaning that they are bound to the host machine's file system.
+# This is to better facilitate local development in the IDE, so the views, models, etc... are available in the IDE.
+# This can be changed by removing the driver and driver_opts from the volumes.
+volumes:
+  umb_media:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./backend/wwwroot/media
+      o: bind
+  umb_logs:
+  umb_data:
+
+networks:
+  umbnet:
+    driver: bridge

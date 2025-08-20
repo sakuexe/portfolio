@@ -17,6 +17,7 @@
         propagatedBuildInputs = with pkgs; [
           dotnetCorePackages.dotnet_9.sdk
           dotnetCorePackages.dotnet_9.runtime
+          csharp-ls
         ];
       };
     };
