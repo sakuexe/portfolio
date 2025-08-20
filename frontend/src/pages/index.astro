@@ -1,13 +1,20 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Hero from "../components/Hero.astro";
+import AboutMe from "../components/AboutMe.astro";
 
 import "../styles/global.css";
 
-const res = await fetch("http://localhost:46118/umbraco/delivery/api/v2/content/item/");
-const helloworld = await res.json();
+// const res = await fetch("http://localhost:46118/umbraco/delivery/api/v2/content/item/homepage");
+// if (!res.ok) {
+//   console.error("non-200 status code recived from backend", res.status);
+// } else {
+//   const homepageContent = await res.json();
+//   console.info(homepageContent)
+// }
 ---
 
 <Layout>
   <Hero></Hero>
+  <AboutMe></AboutMe>
 </Layout>
