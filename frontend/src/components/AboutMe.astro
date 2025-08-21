@@ -1,29 +1,54 @@
 ---
+import type { AboutMeContentModel } from "../client";
 import { apiUrl } from "../config/api"
+import SkLogo from "../assets/images/sklogo.svg"
+import SkLogoRaw from "../assets/images/sklogo.svg?raw"
+
 const res = await fetch(`${apiUrl}/content/item/about-me`);
-const aboutMeContent = await res.json();
+const aboutMeContent: AboutMeContentModel = await res.json();
 ---
+
+<style>
+  .logo:hover > svg {
+    display: none;
+  }
+  .logo:hover > .code-version {
+    display: block;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 8;
+  }
+</style>
 
 <section id="aboutme" class="grid max-w-6xl mx-auto md:grid-cols-3">
   <div class="space-y-4 col-span-2">
+
     <div class="subheader">
       <p><span>// 01</span> About me</p>
       <h2>Who Am I?</h2>
     </div>
+
     <p>
-      {aboutMeContent.properties.description}
+      {aboutMeContent.properties?.description}
     </p>
-    <p set:html={aboutMeContent.properties.thankYouMessage.markup}></p>
-    <p>Feel free to check out my CV!</p>
-    <a 
-      href={`${apiUrl}/${aboutMeContent.properties.cvFile[0].url}`}
-      target="_blank"
-      class="btn bg-secondary-600 w-max hover:bg-transparent outline-secondary-600 hover:outline-2"
-    >Download CV</a>
+    <p set:html={aboutMeContent.properties?.thankYouMessage?.markup}></p>
+
+    { 
+      aboutMeContent.properties?.cvFile && (
+        <p>Feel free to check out my CV!</p>
+        <a 
+          href={`${apiUrl}/${aboutMeContent.properties.cvFile[0].url}`}
+          target="_blank"
+          class="btn bg-secondary-600 w-max hover:bg-transparent outline-secondary-600 hover:outline-2"
+        >Download CV</a> 
+      )
+    }
   </div>
   <div class="relative scale-150 hidden -z-10 md:block">
-    <div class="w-full opacity-50 fill-primary-400 absolute top-1/2 -translate-y-1/2">
-      @Html.Raw(SvgUtils.SanitizeSvg("wwwroot/images/sklogo.svg"))
+    <div class="logo w-full opacity-50 fill-primary-400 absolute top-1/2 -translate-y-1/2">
+      <SkLogo class="fill-primary-400"/>
+      <p class="code-version hidden">{SkLogoRaw}</p>
     </div>
     <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-primary to-transparent"></div>
   </div>
