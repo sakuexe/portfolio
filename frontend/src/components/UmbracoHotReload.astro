@@ -1,0 +1,37 @@
+---
+/**
+ * Connects to the SignalR socket and reloads the browser window
+ * whenever Umbraco content has been published
+ */
+---
+
+<div aria-hidden="true" style="display:none"></div>
+
+<script>
+  import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
+  import { BaseApiUrl } from "../utils/umbraco"
+
+  const hubUrl = `${BaseApiUrl}/hot-reload`;
+  const connection = new HubConnectionBuilder()
+    .withUrl(hubUrl, {
+      withCredentials: true,
+    })
+    .withAutomaticReconnect()
+    .configureLogging(LogLevel.Information)
+    .build();
+
+  connection.on("contentPublished", (items: unknown) => {
+    console.info("[Umbraco] contentPublished:", items);
+    window.location.reload();
+  });
+
+  connection
+    .start()
+    .catch(err => console.error("SignalR start error:", err));
+
+  // Cleanly close the socket when navigating away.
+  window.addEventListener("beforeunload", () => {
+    connection.stop().catch(() => { console.log("Stopping SignalR connection"); });
+  });
+</script>
+

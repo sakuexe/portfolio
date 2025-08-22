@@ -2,6 +2,9 @@
 import Nav from "../components/Nav.astro"
 import MobileNav from "../components/MobileNav.astro"
 import Footer from "../components/Footer.astro"
+import UmbracoHotReload from "../components/UmbracoHotReload.astro"
+
+const isDev = import.meta.env.DEV;
 ---
 
 <!doctype html>
@@ -14,13 +17,15 @@ import Footer from "../components/Footer.astro"
 		<title>Saku's Portfolio</title>
 	</head>
 	<body class="text-primary-100 bg-primary text-lg font-mono leading-relaxed min-w-[356px]">
-    <Nav></Nav>
-    <MobileNav></MobileNav>
+    <Nav />
+    <MobileNav />
 
     <main role="main" class="pb-20 min-h-[90svh] overflow-x-clip">
       <slot />
     </main>
 
-    <Footer></Footer>
+    <Footer />
+
+    { isDev && <UmbracoHotReload />}
 	</body>
 </html>

@@ -1,10 +1,10 @@
 ---
 import type { AboutMeContentModel } from "../client";
-import { apiUrl } from "../config/api"
+import { ApiUrl } from "../utils/umbraco"
 import SkLogo from "../assets/images/sklogo.svg"
 import SkLogoRaw from "../assets/images/sklogo.svg?raw"
 
-const res = await fetch(`${apiUrl}/content/item/about-me`);
+const res = await fetch(`${ApiUrl}/content/item/about-me`);
 const aboutMeContent: AboutMeContentModel = await res.json();
 ---
 
@@ -38,7 +38,7 @@ const aboutMeContent: AboutMeContentModel = await res.json();
       aboutMeContent.properties?.cvFile && (
         <p>Feel free to check out my CV!</p>
         <a 
-          href={`${apiUrl}/${aboutMeContent.properties.cvFile[0].url}`}
+          href={`${ApiUrl}/${aboutMeContent.properties.cvFile[0].url}`}
           target="_blank"
           class="btn bg-secondary-600 w-max hover:bg-transparent outline-secondary-600 hover:outline-2"
         >Download CV</a> 

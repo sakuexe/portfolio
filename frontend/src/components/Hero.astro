@@ -12,6 +12,10 @@ import heroBackground from "../assets/images/floating-cubes.webp"
     height: 100%;
     transition: 0.15s opacity ease-in-out;
     z-index: -10;
+    opacity: 0;
+    @media (prefers-reduced-motion: no-preference) {
+      transition: opacity 0.15s ease-in-out;
+    }
   }
   
   picture > img {
@@ -62,14 +66,19 @@ window.addEventListener('scroll', () => {
 // Adding a nice fade-in effect to the hero image
 heroImage.onload = () => {
   const thresholdInMs = 500;
+
   // if the time it has taken to load the image is less than the threshold,
-  // transition with a short animation (200ms)
+  // transition with a short animation
   if (performance.now() - startTime < thresholdInMs) {
-    heroPicture.classList.add('opacity-100');
+    heroPicture.style.opacity = "1";
+    console.debug("hero image loaded with short animation")
     return
   };
-  // otherwise transition with a longer animation (1000ms)
-  heroPicture.classList.add('opacity-100', 'duration-1000');
+
+  // otherwise transition with a longer animation
+  console.debug("hero image loaded with long animation")
+  heroPicture.style.opacity = "1";
+  heroPicture.style.transitionDuration = "1s";
 };
 
 heroImage.onerror = () => {
