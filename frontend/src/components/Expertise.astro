@@ -1,0 +1,74 @@
+---
+import type { ExpertiseContentModel } from "../client";
+import { BaseApiUrl, GetContent } from "../utils/umbraco"
+import SkLogo from "../assets/images/sklogo.svg"
+
+const model = await GetContent<ExpertiseContentModel>("expertise")
+---
+
+<section id="expertise">
+  <div class="subheader text-center mb-8">
+    <p><span>// 02</span> Expertise</p>
+    <h2>{model.properties?.heading}</h2>
+  </div>
+  <div class="flex flex-wrap gap-4 justify-center max-w-content mx-auto">
+
+    { model.properties?.cards?.items.map(item => (
+      <div class="flex flex-col flex-grow justify-center outline-2 outline-primary-300 
+        max-w-md p-6 gap-y-3 drop-shadow-lg backdrop-brightness-90 backdrop-blur-sm">
+
+        <!-- card header -->
+        <div class="flex items-center gap-x-5">
+          <div class="w-16 fill-primary-100">
+          { !item.content.properties?.icon 
+            || item.content.properties.icon.length === 0
+            ? <SkLogo />
+            : <img 
+                src={`${BaseApiUrl}${item.content.properties!.icon![0].url}`} 
+                alt="" 
+                loading="lazy" 
+                decoding="async"
+                width="64"
+                height="64"
+              >
+          }
+            
+          </div>
+          <h3 class="text-3xl font-bold">
+            {item.content.properties?.heading}
+          </h3>
+        </div>
+
+        <!-- card body -->
+        <div class="flex gap-x-3">
+
+          <!-- the html indenting style -->
+          <div class="opacity-75 flex flex-col items-center mr-auto select-none">
+            <pre>&lt;p&gt;</pre>
+            <div class="h-full border border-primary-100 opacity-75"></div>
+            <pre>&lt;/p&gt;</pre>
+          </div>
+
+          <!-- card description -->
+          <p class="py-6 w-full">
+            {item.content.properties?.description}
+          </p>
+        </div>
+      </div>
+    )) }
+
+  </div>
+  <div class="absolute top-0 left-0 w-full h-full -z-10 bg-primary opacity-75 mix-blend-darken"></div>
+</section>
+
+<style>
+#expertise {
+  position: relative;
+  isolation: isolate;
+  background: url("/images/code.webp") no-repeat -1rem center;
+  background-size: cover;
+  /* parallax effect */
+  background-attachment: fixed;
+  box-shadow: inset 0 0 4rem var(--color-primary);
+}
+</style>

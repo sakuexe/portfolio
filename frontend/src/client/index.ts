@@ -35,6 +35,10 @@ export type ApiBlockItemModel = {
     settings?: IApiElementModel;
 };
 
+export type ApiBlockListModel = {
+    items: Array<ApiBlockItemModel | ApiBlockGridItemModel>;
+};
+
 export type ApiContentRouteModel = {
     path: string;
     startItem: ApiContentStartItemModel;
@@ -43,6 +47,33 @@ export type ApiContentRouteModel = {
 export type ApiContentStartItemModel = {
     id: string;
     path: string;
+};
+
+export type ExpertiseCardElementModel = IApiElementModelBase & {
+    contentType: 'expertiseCard';
+} & {
+    properties?: ExpertiseCardPropertiesModel;
+};
+
+export type ExpertiseCardPropertiesModel = {
+    heading?: string | null;
+    description?: string | null;
+    icon?: Array<IApiMediaWithCropsModel> | null;
+};
+
+export type ExpertiseContentModel = IApiContentModelBase & {
+    contentType: 'expertise';
+} & {
+    properties?: ExpertisePropertiesModel;
+};
+
+export type ExpertiseContentResponseModel = IApiContentResponseModelBase & {
+    contentType: 'expertise';
+} & ExpertiseContentModel;
+
+export type ExpertisePropertiesModel = {
+    heading?: string | null;
+    cards?: ApiBlockListModel;
 };
 
 export type HelloWorldContentModel = IApiContentModelBase & {
@@ -83,7 +114,7 @@ export type HttpValidationProblemDetails = ProblemDetails & {
     } | undefined;
 };
 
-export type IApiContentModel = HelloWorldContentModel | HomepageContentModel | AboutMeContentModel;
+export type IApiContentModel = HelloWorldContentModel | HomepageContentModel | AboutMeContentModel | ExpertiseContentModel;
 
 export type IApiContentModelBase = IApiElementModelBase & {
     readonly contentType: string;
@@ -93,7 +124,7 @@ export type IApiContentModelBase = IApiElementModelBase & {
     route: ApiContentRouteModel;
 };
 
-export type IApiContentResponseModel = HelloWorldContentResponseModel | HomepageContentResponseModel | AboutMeContentResponseModel;
+export type IApiContentResponseModel = HelloWorldContentResponseModel | HomepageContentResponseModel | AboutMeContentResponseModel | ExpertiseContentResponseModel;
 
 export type IApiContentResponseModelBase = IApiContentModelBase & {
     contentType: 'IApiContentResponseModelBase';
@@ -109,9 +140,7 @@ export type IApiContentResponseModelBase = IApiContentModelBase & {
     };
 };
 
-export type IApiElementModel = {
-    [key: string]: never;
-};
+export type IApiElementModel = ExpertiseCardElementModel;
 
 export type IApiElementModelBase = {
     readonly id: string;

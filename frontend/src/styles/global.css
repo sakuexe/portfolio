@@ -98,6 +98,10 @@ body>main>*:not(.no-container) {
   font-display: swap;
 }
 
+.max-w-content {
+  max-width: 100rem;
+}
+
 .subheader {
   line-height: 1;
 }
