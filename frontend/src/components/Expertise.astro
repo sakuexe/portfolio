@@ -1,10 +1,20 @@
 ---
 import type { ExpertiseContentModel } from "../client";
-import { BaseApiUrl, GetContent } from "../utils/umbraco"
+import { GetContent } from "../utils/umbraco"
 import SkLogo from "../assets/images/sklogo.svg"
+import InlineSvg from "../utils/svg_inliner.ts";
 
 const model = await GetContent<ExpertiseContentModel>("expertise")
 ---
+
+<style is:global>
+#expertise .expertise-card .card-header svg {
+  width: 64px;
+  height: auto;
+  aspect-ratio: 1/1;
+  fill: var(--color-secondary-300);
+}
+</style>
 
 <section id="expertise">
   <div class="subheader text-center mb-8">
@@ -14,26 +24,18 @@ const model = await GetContent<ExpertiseContentModel>("expertise")
   <div class="flex flex-wrap gap-4 justify-center max-w-content mx-auto">
 
     { model.properties?.cards?.items.map(item => (
-      <div class="flex flex-col flex-grow justify-center outline-2 outline-primary-300 
+      <div class="expertise-card flex flex-col flex-grow justify-center outline-2 outline-primary-300 
         max-w-md p-6 gap-y-3 drop-shadow-lg backdrop-brightness-90 backdrop-blur-sm">
 
         <!-- card header -->
-        <div class="flex items-center gap-x-5">
-          <div class="w-16 fill-primary-100">
+        <div class="card-header flex items-center gap-x-5">
           { !item.content.properties?.icon 
             || item.content.properties.icon.length === 0
             ? <SkLogo />
-            : <img 
-                src={`${BaseApiUrl}${item.content.properties!.icon![0].url}`} 
-                alt="" 
-                loading="lazy" 
-                decoding="async"
-                width="64"
-                height="64"
-              >
+            : <Fragment 
+                set:html={ InlineSvg(item.content.properties!.icon![0].url).then(result => result) } 
+              />
           }
-            
-          </div>
           <h3 class="text-3xl font-bold">
             {item.content.properties?.heading}
           </h3>
