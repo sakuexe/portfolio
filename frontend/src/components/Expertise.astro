@@ -17,6 +17,18 @@ const cards = TypedBlockList<ExpertiseCardElementModel>(model.properties?.cards)
 }
 </style>
 
+<style>
+section {
+  position: relative;
+  isolation: isolate;
+  background: url("/images/code.webp") no-repeat -1rem center;
+  background-size: cover;
+  /* parallax effect */
+  background-attachment: fixed;
+  box-shadow: inset 0 0 4rem var(--color-primary);
+}
+</style>
+
 <section id="expertise">
   <div class="subheader text-center mb-8">
     <p><span>// 02</span> Expertise</p>
@@ -63,15 +75,3 @@ const cards = TypedBlockList<ExpertiseCardElementModel>(model.properties?.cards)
   </div>
   <div class="absolute top-0 left-0 w-full h-full -z-10 bg-primary opacity-75 mix-blend-darken"></div>
 </section>
-
-<style>
-#expertise {
-  position: relative;
-  isolation: isolate;
-  background: url("/images/code.webp") no-repeat -1rem center;
-  background-size: cover;
-  /* parallax effect */
-  background-attachment: fixed;
-  box-shadow: inset 0 0 4rem var(--color-primary);
-}
-</style>
