@@ -1,10 +1,11 @@
 ---
-import type { ExpertiseContentModel } from "../client";
-import { GetContent } from "../utils/umbraco"
+import type { ExpertiseContentModel, ExpertiseCardElementModel } from "../client";
+import { GetContent, TypedBlockList } from "../utils/umbraco"
 import SkLogo from "../assets/images/sklogo.svg"
 import InlineSvg from "../utils/svg_inliner.ts";
 
 const model = await GetContent<ExpertiseContentModel>("expertise")
+const cards = TypedBlockList<ExpertiseCardElementModel>(model.properties?.cards);
 ---
 
 <style is:global>
@@ -23,21 +24,21 @@ const model = await GetContent<ExpertiseContentModel>("expertise")
   </div>
   <div class="flex flex-wrap gap-4 justify-center max-w-content mx-auto">
 
-    { model.properties?.cards?.items.map(item => (
+    { cards?.map((card) => (
       <div class="expertise-card flex flex-col flex-grow justify-center outline-2 outline-primary-300 
         max-w-md p-6 gap-y-3 drop-shadow-lg backdrop-brightness-90 backdrop-blur-sm">
 
         <!-- card header -->
         <div class="card-header flex items-center gap-x-5">
-          { !item.content.properties?.icon 
-            || item.content.properties.icon.length === 0
+          { !card.properties?.icon 
+            || card.properties.icon.length === 0
             ? <SkLogo />
             : <Fragment 
-                set:html={ InlineSvg(item.content.properties!.icon![0].url).then(result => result) } 
+                set:html={ InlineSvg(card.properties!.icon![0].url).then(result => result) } 
               />
           }
           <h3 class="text-3xl font-bold">
-            {item.content.properties?.heading}
+            {card.properties?.heading}
           </h3>
         </div>
 
@@ -53,7 +54,7 @@ const model = await GetContent<ExpertiseContentModel>("expertise")
 
           <!-- card description -->
           <p class="py-6 w-full">
-            {item.content.properties?.description}
+            {card.properties?.description}
           </p>
         </div>
       </div>

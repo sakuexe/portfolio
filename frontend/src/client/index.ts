@@ -114,7 +114,7 @@ export type HttpValidationProblemDetails = ProblemDetails & {
     } | undefined;
 };
 
-export type IApiContentModel = HelloWorldContentModel | HomepageContentModel | AboutMeContentModel | ExpertiseContentModel;
+export type IApiContentModel = HelloWorldContentModel | HomepageContentModel | AboutMeContentModel | ExpertiseContentModel | SkillsContentModel;
 
 export type IApiContentModelBase = IApiElementModelBase & {
     readonly contentType: string;
@@ -124,7 +124,7 @@ export type IApiContentModelBase = IApiElementModelBase & {
     route: ApiContentRouteModel;
 };
 
-export type IApiContentResponseModel = HelloWorldContentResponseModel | HomepageContentResponseModel | AboutMeContentResponseModel | ExpertiseContentResponseModel;
+export type IApiContentResponseModel = HelloWorldContentResponseModel | HomepageContentResponseModel | AboutMeContentResponseModel | ExpertiseContentResponseModel | SkillsContentResponseModel;
 
 export type IApiContentResponseModelBase = IApiContentModelBase & {
     contentType: 'IApiContentResponseModelBase';
@@ -140,7 +140,7 @@ export type IApiContentResponseModelBase = IApiContentModelBase & {
     };
 };
 
-export type IApiElementModel = ExpertiseCardElementModel;
+export type IApiElementModel = ExpertiseCardElementModel | ProgressBarElementModel | IconWithLabelElementModel;
 
 export type IApiElementModelBase = {
     readonly id: string;
@@ -182,6 +182,17 @@ export type IApiMediaWithCropsResponseModel = {
     readonly updateDate: string;
 };
 
+export type IconWithLabelElementModel = IApiElementModelBase & {
+    contentType: 'iconWithLabel';
+} & {
+    properties?: IconWithLabelPropertiesModel;
+};
+
+export type IconWithLabelPropertiesModel = {
+    icon?: Array<IApiMediaWithCropsModel> | null;
+    label?: string | null;
+};
+
 export type ImageCropCoordinatesModel = {
     x1: number;
     y1: number;
@@ -220,9 +231,36 @@ export type ProblemDetails = {
     [key: string]: unknown | (string | null) | (string | null) | (number | null) | (string | null) | (string | null) | undefined;
 };
 
+export type ProgressBarElementModel = IApiElementModelBase & {
+    contentType: 'progressBar';
+} & {
+    properties?: ProgressBarPropertiesModel;
+};
+
+export type ProgressBarPropertiesModel = {
+    label?: string | null;
+    value?: number | null;
+};
+
 export type RichTextModel = {
     markup: string;
     blocks: Array<ApiBlockItemModel | ApiBlockGridItemModel>;
+};
+
+export type SkillsContentModel = IApiContentModelBase & {
+    contentType: 'skills';
+} & {
+    properties?: SkillsPropertiesModel;
+};
+
+export type SkillsContentResponseModel = IApiContentResponseModelBase & {
+    contentType: 'skills';
+} & SkillsContentModel;
+
+export type SkillsPropertiesModel = {
+    heading?: string | null;
+    description?: RichTextModel;
+    skillItems?: ApiBlockListModel;
 };
 
 export type GetContent20Data = {

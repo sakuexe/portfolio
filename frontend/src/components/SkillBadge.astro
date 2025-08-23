@@ -1,0 +1,52 @@
+---
+import SkLogo from "../assets/images/sklogo.svg";
+import type { IApiMediaWithCropsModel } from "../client";
+import InlineRemoteSvg from "../utils/svg_inliner";
+import { BaseApiUrl } from "../utils/umbraco";
+
+interface Props {
+  media?: IApiMediaWithCropsModel[] | null | undefined;
+  width?: number;
+  height?: number;
+}
+
+const { media, width = 170, height = 170 } = Astro.props;
+const url = media?.[0]?.url ?? null;
+
+// Inline SVG when the URL ends with ".svg"
+let inlineSvg: string | null = null;
+if (url?.toLowerCase().endsWith(".svg")) {
+  try {
+    inlineSvg = await InlineRemoteSvg(url, false)
+  } catch (error) {
+    console.error(error)
+  }
+}
+---
+
+<style is:global>
+#skill-badges svg,
+#skill-badges img {
+  width: 100%;
+  height: auto;
+}
+</style>
+
+{!url && <SkLogo />}
+
+{url && inlineSvg && (
+  // Inline the SVG so it can be styled with CSS, etc.
+  <Fragment set:html={inlineSvg} />
+)}
+
+{url && !inlineSvg && (
+  // Fallback for non-SVG (or failed fetch)
+  <img
+    src={`${BaseApiUrl}${url}`}
+    alt=""
+    width={width}
+    height={height}
+    loading="lazy"
+    decoding="async"
+  />
+)}

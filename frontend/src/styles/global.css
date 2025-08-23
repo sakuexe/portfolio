@@ -15,9 +15,10 @@
   --color-primary-800: #433e4e;
   --color-primary-900: #3b3644;
   --color-primary-950: #242129;
-  /*main colors*/
+  /* default primary color */
   --color-primary: var(--color-primary-950);
-  /*accent color*/
+
+  /* secondary color */
   --color-secondary-50: var(--color-violet-50);
   --color-secondary-100: var(--color-violet-100);
   --color-secondary-200: var(--color-violet-200);
@@ -29,9 +30,24 @@
   --color-secondary-800: var(--color-violet-800);
   --color-secondary-900: var(--color-violet-900);
   --color-secondary-950: var(--color-violet-950);
-  /*main colors*/
+  /* default secondary colors*/
   --color-secondary: var(--color-secondary-700);
   --color-secondary-text: var(--color-secondary-500);
+
+  /* accent color */
+  --color-accent-50: var(--color-orange-50);
+  --color-accent-100: var(--color-orange-100);
+  --color-accent-200: var(--color-orange-200);
+  --color-accent-300: var(--color-orange-300);
+  --color-accent-400: var(--color-orange-400);
+  --color-accent-500: var(--color-orange-500);
+  --color-accent-600: var(--color-orange-600);
+  --color-accent-700: var(--color-orange-700);
+  --color-accent-800: var(--color-orange-800);
+  --color-accent-900: var(--color-orange-900);
+  --color-accent-950: var(--color-orange-950);
+  /* default accent color */
+  --color-accent: var(--color-accent-300);
   
   /* Fonts (replace the defaults) */
   --font-sans: Montserrat, sans-serif;
