@@ -1,0 +1,4 @@
+# project wide ignores
+
+.env
+.env.*
