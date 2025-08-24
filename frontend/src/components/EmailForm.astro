@@ -5,7 +5,7 @@ import FormResult from "./forms/FormResult.astro";
 import "../styles/forms.css";
 ---
 
-<form action={`${BaseApiUrl}/email/contact`} method="POST">
+<form id="email-form" action={`${BaseApiUrl}/api/email/contactform`} method="POST">
 	<label>
 		Name
     <input 
@@ -67,3 +67,44 @@ import "../styles/forms.css";
   />
 </form>
 
+<script>
+  // TODO: add an on error function that also saves the input data to local storage
+  // so that we can retry sending the email
+
+  const form: HTMLFormElement | null = document.querySelector("form#email-form");
+  if (!form) throw new Error("form#email-form was not found");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formdata = new FormData(form);
+    const payload = Object.fromEntries(formdata.entries());
+    form.classList.add("loading");
+
+    let response;
+    try {
+      response = await fetch(form.action, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+    } catch (error) {
+      console.error(error);
+      form.classList.remove("loading");
+      form.classList.add("error");
+      return;
+    }
+    form.classList.remove("loading");
+
+    if (!response.ok) {
+      form.classList.add("error");
+      console.error(`[${form.action}] ${response.status} - ${await response.text()}`);
+      return;
+    }
+
+    form.classList.add("success");
+    console.debug(`[${form.action}] ${response.status} - ${await response.text()}`);
+  });
+</script>
