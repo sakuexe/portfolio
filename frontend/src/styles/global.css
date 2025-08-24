@@ -134,20 +134,28 @@ body>main>*:not(.no-container) {
   line-height: 1;
 }
 
+.subheader>p {
+  opacity: 0.75;
+}
+
 .subheader>p>span {
   color: theme("colors.secondary.400");
+}
+
+.description > *:not(:last-child) {
+  margin-bottom: 1rem;
 }
 
 a:not(.btn):not(.no-underline) {
   text-decoration: underline;
   text-decoration-thickness: 0.2rem;
   text-underline-offset: 0.3rem;
-  text-decoration-color: --color-secondary-400;
+  text-decoration-color: var(--color-secondary-text);
   @apply motion-safe:transition-all;
 }
 
 a:not(.btn):not(.no-underline):hover {
-  text-decoration-color: --color-secondary-700
+  text-decoration-color: currentColor;
 }
 
 .btn {

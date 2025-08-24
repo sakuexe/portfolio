@@ -4,25 +4,25 @@ import heroBackground from "../assets/images/floating-cubes.webp"
 ---
 
 <style>
-  picture {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    transition: 0.15s opacity ease-in-out;
-    z-index: -10;
-    opacity: 0;
-    @media (prefers-reduced-motion: no-preference) {
-      transition: opacity 0.15s ease-in-out;
-    }
+picture {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: 0.15s opacity ease-in-out;
+  z-index: -10;
+  opacity: 0;
+  @media (prefers-reduced-motion: no-preference) {
+    transition: opacity 0.15s ease-in-out;
   }
-  
-  picture > img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+}
+
+picture > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 </style>
 
 <section id="hero" class="flex items-center justify-center min-h-[80svh] relative overflow-clip">
@@ -43,6 +43,8 @@ import heroBackground from "../assets/images/floating-cubes.webp"
     quality={95}
     position="center"
     fit="cover"
+    loading="lazy"
+    decoding="async"
   >
   </Picture>
   <div class="grid-pattern absolute top-0 left-0 w-full h-full mix-blend-lighten opacity-50 -z-20"></div>
@@ -64,24 +66,29 @@ window.addEventListener('scroll', () => {
 });
 
 // Adding a nice fade-in effect to the hero image
-heroImage.onload = () => {
+heroImage.onload = showHeroPicture;
+// if image is already loaded 
+// (fallback if this part of the code is executed after the image has been loaded)
+if (heroImage.complete) showHeroPicture();
+
+heroImage.onerror = () => {
+  console.error('No image found with the src path: ', heroImage.currentSrc);
+};
+
+function showHeroPicture() {
   const thresholdInMs = 500;
 
   // if the time it has taken to load the image is less than the threshold,
   // transition with a short animation
   if (performance.now() - startTime < thresholdInMs) {
-    heroPicture.style.opacity = "1";
+    heroPicture!.style.opacity = "1";
     console.debug("hero image loaded with short animation")
     return
   };
 
   // otherwise transition with a longer animation
   console.debug("hero image loaded with long animation")
-  heroPicture.style.opacity = "1";
-  heroPicture.style.transitionDuration = "1s";
-};
-
-heroImage.onerror = () => {
-  console.error('No image found with the src path: ', heroImage.currentSrc);
-};
+  heroPicture!.style.opacity = "1";
+  heroPicture!.style.transitionDuration = "1s";
+}
 </script>

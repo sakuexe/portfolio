@@ -73,6 +73,7 @@ export type ContactContentResponseModel = IApiContentResponseModelBase & {
 export type ContactPropertiesModel = {
     heading?: string | null;
     description?: RichTextModel;
+    emailAddress?: string | null;
     links?: Array<ApiLinkModel> | null;
 };
 
