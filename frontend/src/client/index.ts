@@ -60,6 +60,22 @@ export type ApiLinkModel = {
     linkType: LinkTypeModel;
 };
 
+export type ContactContentModel = IApiContentModelBase & {
+    contentType: 'contact';
+} & {
+    properties?: ContactPropertiesModel;
+};
+
+export type ContactContentResponseModel = IApiContentResponseModelBase & {
+    contentType: 'contact';
+} & ContactContentModel;
+
+export type ContactPropertiesModel = {
+    heading?: string | null;
+    description?: RichTextModel;
+    links?: Array<ApiLinkModel> | null;
+};
+
 export type ExperienceContentModel = IApiContentModelBase & {
     contentType: 'experience';
 } & {
@@ -147,7 +163,7 @@ export type HttpValidationProblemDetails = ProblemDetails & {
     } | undefined;
 };
 
-export type IApiContentModel = HelloWorldContentModel | HomepageContentModel | AboutMeContentModel | ExpertiseContentModel | SkillsContentModel | ProjectsContentModel | ProjectDetailsContentModel | ProfessionalBackgroundContentModel | ExperienceContentModel;
+export type IApiContentModel = HelloWorldContentModel | HomepageContentModel | AboutMeContentModel | ExpertiseContentModel | SkillsContentModel | ProjectsContentModel | ProjectDetailsContentModel | ProfessionalBackgroundContentModel | ExperienceContentModel | ContactContentModel;
 
 export type IApiContentModelBase = IApiElementModelBase & {
     readonly contentType: string;
@@ -157,7 +173,7 @@ export type IApiContentModelBase = IApiElementModelBase & {
     route: ApiContentRouteModel;
 };
 
-export type IApiContentResponseModel = HelloWorldContentResponseModel | HomepageContentResponseModel | AboutMeContentResponseModel | ExpertiseContentResponseModel | SkillsContentResponseModel | ProjectsContentResponseModel | ProjectDetailsContentResponseModel | ProfessionalBackgroundContentResponseModel | ExperienceContentResponseModel;
+export type IApiContentResponseModel = HelloWorldContentResponseModel | HomepageContentResponseModel | AboutMeContentResponseModel | ExpertiseContentResponseModel | SkillsContentResponseModel | ProjectsContentResponseModel | ProjectDetailsContentResponseModel | ProfessionalBackgroundContentResponseModel | ExperienceContentResponseModel | ContactContentResponseModel;
 
 export type IApiContentResponseModelBase = IApiContentModelBase & {
     contentType: 'IApiContentResponseModelBase';

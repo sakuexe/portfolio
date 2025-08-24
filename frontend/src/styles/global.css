@@ -63,6 +63,10 @@
   /* Box shadows */
   --shadow-sharp: -12px 12px 0 currentColor;
   --shadow-sharp-lg: -20px 20px 0 currentColor;
+
+  --default-transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+  --default-transition-duration: 150ms;
+  --default-transition: all var(--default-transition-duration) var(--default-transition-timing);
 }
 
 ::selection {
