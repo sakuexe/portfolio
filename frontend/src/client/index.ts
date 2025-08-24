@@ -299,7 +299,8 @@ export type ProjectsContentResponseModel = IApiContentResponseModelBase & {
 } & ProjectsContentModel;
 
 export type ProjectsPropertiesModel = {
-    [key: string]: never;
+    highlightedTags?: Array<string> | null;
+    projectHighlight?: Array<IApiContentModel> | null;
 };
 
 export type RichTextModel = {

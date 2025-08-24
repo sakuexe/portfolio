@@ -13,4 +13,9 @@ export default defineConfig({
       },
     },
   },
+
+  image: {
+    // Either list exact hostnames…
+    domains: ['localhost', 'api.sakukarttunen.com'],
+  },
 });

@@ -4,23 +4,85 @@ import type {
   ProjectDetailsContentModel,
 } from "../client";
 import { GetContent, GetChildContent } from "../utils/umbraco";
+import ProjectThumbnail from "./ProjectThumbnail.astro"
+import { Image } from "astro:assets";
+import Phone from "../assets/images/phone.webp";
+
+const othersCategory = "Other";
 
 const model = await GetContent<ProjectsContentModel>("projects");
 const projects = await GetChildContent<ProjectDetailsContentModel>("/projects");
 // projects.items.sort((a, b) => a.properties?.startingTime - b.properties?.startingTime)
 
-// todo make this assignable with tags somehow maybe in the backoffice
-const categories = ["Web Development", "Graphic Design", "Other"];
+const categories: string[] = model.properties?.highlightedTags || []
+categories.push(othersCategory)
+
+let projectHighlight = model.properties?.projectHighlight?.pop();
+if (!projectHighlight) {
+  projectHighlight = projects.items.random()
+}
+
+function getCategoriesCount(category: string): number {
+  let projectsWithCategory = projects.items
+    .filter(project => project.properties?.tags?.includes(category));
+
+  if (category.toLowerCase() === othersCategory.toLowerCase()) {
+    projectsWithCategory = projects.items
+      .filter(project => !project.properties?.tags?.some(tag => categories.includes(tag)));
+  };
+
+  return projectsWithCategory.length;
+}
+
+function getCategories(project: ProjectDetailsContentModel): string[] {
+  if (!project.properties?.tags) {
+    return [];
+  }
+  const categoryTags = project.properties.tags.filter(tag => categories.includes(tag))
+  if (categoryTags.length !== 0) {
+    return categoryTags;
+  }
+
+  return [othersCategory];
+}
 ---
 
-<section>
-  { projects.items.map(project => (
-  <p>
-    <strong>{project.name}</strong> - {project.properties?.tags?.join(", ")}</p>)
-  ) }
-</section>
+<style>
+#portfolio-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
 
-<section id="portfolio" class="grid gap-6 max-w-content mx-auto md:grid-cols-2">
+.category-seperator {
+  opacity: 0.5;
+  pointer-events: none;
+  user-select: none;
+}
+
+#portfolio-filter > .category-seperator:last-child {
+  display: none;
+}
+
+#portfolio-filter > li > button {
+  cursor: pointer;
+}
+
+#portfolio-filter > li > button > sup {
+  text-decoration: none;
+  font-size: 16px;
+}
+
+#portfolio-filter > li.active > button > span {
+  color: var(--color-secondary-text);
+  text-decoration: underline;
+  text-underline-offset: 8px;
+  text-decoration-thickness: 4px;
+  text-decoration-color: var(--color-secondary);
+}
+</style>
+
+<section id="portfolio" class="space-y-6 max-w-content mx-auto">
   <div class="grid max-w-6xl gap-x-8 lg:mx-auto md:grid-cols-2 md:col-span-full">
     <div class="space-y-4 max-w-xl mx-auto">
       <div class="subheader">
@@ -40,83 +102,53 @@ const categories = ["Web Development", "Graphic Design", "Other"];
       <div class="pb-10">
         <p>Featured Project:</p>
         <h3 
-          class="text-5xl font-bold max-w-xs bg-primary-900/70 px-4 py-2 
+          class="text-5xl font-bold w-fit bg-primary-900/70 px-4 py-2 
           outline-1 outline-primary-100/20 rounded-md backdrop-blur-sm">
-          @FeaturedProject.Title
+          { projectHighlight?.name }
         </h3>
-        <a href="/portfolio/@FeaturedProject._id" 
-          class="btn bg-secondary-600 w-max mt-4">View Project</a>
+        <a 
+          href={`/portfolio${projectHighlight.route.path}`}
+          class="btn bg-secondary-600 w-max mt-4">
+          View Project
+        </a>
       </div>
-      <img src="~/images/phone.webp" alt="placeholder phone"
-        class="absolute top-0 right-0 -z-10 h-full rotate-6">
+      <Image 
+        src={Phone}
+        width="637"
+        height="800"
+        layout="constrained"
+        alt="Phone with a screenshot of the website on it"
+        class="absolute top-0 right-0 -z-10 h-full w-auto rotate-6"/>
     </div>
   </div>
 
   <div class="md:col-span-full">
     <p>Filter by:</p>
-    <ul id="portfolio-filter" class="flex flex-wrap gap-2">
-      <li class="cursor-pointer ">
-        <span class="text-secondary-400 underline-offset-8 
-        decoration-4 decoration-secondary">
-          All 
-        </span>
-        <sup class="text-base text-secondary-400">0</sup>
+    <ul id="portfolio-filter" class="flex flex-wrap gap-2" data-all-categories={categories.join(";")}>
+      <li class="active">
+        <button type="button">
+          <span>All</span>
+          <sup class="text-base text-secondary-400">{ projects.total }</sup>
+        </button>
       </li>
-      <li>/</li>
-      { categories.map((category, index) => (
-        <li data-category="@category.Category"
-          class="cursor-pointer">
-          <span class="underline underline-offset-8 decoration-4 decoration-secondary">
-              { category }
-          </span>
-          <sup class="text-base text-secondary-400">0</sup>
+      <li class="category-seperator">/</li>
+      { categories.map((category) => (
+        <li data-category={ category }>
+          <button type="button">
+            <span>{ category }</span>
+            <sup>{ getCategoriesCount(category) }</sup>
+          </button>
         </li>
-        <li>/</li>
+        <li class="category-seperator">/</li>
       ))}
     </ul>
   </div>
 
-  <div id="portfolio-items" class="grid grid-cols-fluid gap-4 md:col-span-2">
+  <div id="portfolio-items">
     { projects.items.map(project => (
-      <a 
-        href={`/portfolio${project.route.path}`}
-        data-category="@project.Category"
-        class="block w-full aspect-[3/2] relative overflow-clip shadow-primary/50 drop-shadow-lg group"
-      >
-
-        <!-- Thumbnail image for the project -->
-        {project.properties?.images && project.properties?.images?.length !== 0
-          ? <img 
-            src={project.properties?.images[0].url || ""} 
-            loading="lazy" 
-            decoding="async"
-            alt={`Thumbnail for the ${project.name} project`}
-            class="w-full h-full object-cover saturate-0 motion-safe:transition-all motion-safe:group-hover:scale-110 group-hover:saturate-50"
-          >
-          : <div class="bg-gradient-to-tr from-black to-primary-900 absolute top-0 left-0 w-full h-full isolate">
-            <div 
-              class="grid-pattern opacity-50 w-full h-full motion-safe:transition-all motion-safe:group-hover:scale-110">
-            </div>
-          </div>
-        }
-
-        <!-- Project title -->
-        <div class="absolute bottom-0 left-0 w-full z-10 py-2 px-4 leading-snug">
-          <p class="opacity-75 drop-shadow-md">project.Category</p>
-          <h4 class="font-bold text-2xl capitalize drop-shadow-md">{project.name}</h4>
-        </div>
-
-        <!-- Add a smooth gradient to bottom of image for text contrast -->
-        <div class="bg-gradient-to-t from-black to-transparent h-1/2 w-full
-        absolute bottom-0 left-0 mix-blend-multiply opacity-95">
-        </div>
-        <!-- Color the black and white images to match the theme -->
-        <div class="bg-secondary h-full w-full opacity-25 mix-blend-multiply
-        absolute bottom-0 left-0 motion-safe:transition-all group-hover:opacity-25">
-        </div>
-      </a>
+    <ProjectThumbnail project={project} categories={getCategories(project)} width={700} height={500} />
     ))}
   </div>
 </section>
 
-<!-- <script src="~/js/portfoliofilter.js" asp-append-version="true" defer></script> -->
+<script src="../scripts/project-filter.ts"></script>

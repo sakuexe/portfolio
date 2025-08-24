@@ -1,0 +1,69 @@
+---
+import type { 
+  ProjectDetailsContentModel,
+} from "../client";
+import { BaseApiUrl } from "../utils/umbraco";
+import { Image } from "astro:assets";
+
+interface Props {
+  project: ProjectDetailsContentModel;
+  categories: string[];
+  width?: number;
+  height?: number;
+};
+
+const { project, categories, width = 700, height = 500 } = Astro.props;
+
+let imageUrl = "";
+if (project.properties?.images 
+    && project.properties?.images?.length !== 0) {
+  imageUrl = `${BaseApiUrl}${project.properties.images[0].url}`;
+}
+
+let previewTags: string[] = [];
+if (project.properties?.tags) {
+  previewTags = project.properties.tags.slice(0, 3)
+}
+---
+
+<a 
+  href={`/portfolio${project.route.path}`}
+  data-categories={categories?.join(";")}
+  class="block w-full aspect-[3/2] relative overflow-clip shadow-primary/50 drop-shadow-lg group"
+>
+
+  <!-- Thumbnail image for the project -->
+  {imageUrl !== ""
+    ? <Image
+        src={imageUrl} 
+        alt={`Thumbnail for the ${project.name} project`}
+        width={width}
+        height={height}
+        format="webp"
+        layout="constrained"
+        loading="lazy" 
+        decoding="async"
+        class="w-full h-full object-cover saturate-0 motion-safe:transition-all motion-safe:group-hover:scale-110 group-hover:saturate-50"
+      />
+    : <div class="bg-gradient-to-tr from-black to-primary-900 absolute top-0 left-0 w-full h-full isolate">
+      <div 
+        class="grid-pattern opacity-50 w-full h-full motion-safe:transition-all motion-safe:group-hover:scale-110">
+      </div>
+    </div>
+  }
+
+  <!-- Project title -->
+  <div class="absolute bottom-0 left-0 w-full z-10 py-2 px-4 leading-snug">
+    <p class="opacity-75 drop-shadow-md">{previewTags.join(" | ")}</p>
+    <h4 class="font-bold text-2xl capitalize drop-shadow-md">{project.name}</h4>
+  </div>
+
+  <!-- Add a smooth gradient to bottom of image for text contrast -->
+  <div class="bg-gradient-to-t from-black to-transparent h-1/2 w-full
+  absolute bottom-0 left-0 mix-blend-multiply opacity-95">
+  </div>
+  <!-- Color the black and white images to match the theme -->
+  <div class="bg-secondary h-full w-full opacity-25 mix-blend-multiply
+  absolute bottom-0 left-0 motion-safe:transition-all group-hover:opacity-25">
+  </div>
+</a>
