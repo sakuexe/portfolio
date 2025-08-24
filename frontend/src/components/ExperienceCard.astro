@@ -1,0 +1,94 @@
+---
+import type { ExperienceContentModel, } from "../client";
+import { BaseApiUrl } from "../utils/umbraco";
+import PlaceholderImage from "../assets/images/callingcard.webp";
+import { Image } from "astro:assets";
+
+interface Props {
+  experience: ExperienceContentModel
+}
+
+const { experience } = Astro.props;
+
+function formatDate(dateString: string | null | undefined): string {
+  if (!dateString) return "";
+
+  const date = new Date(dateString);
+  return date.getDateless()
+}
+
+let imageUrl = "";
+if (experience.properties?.image && experience.properties?.image.length !== 0) {
+  const imagePath = experience.properties?.image[0].url;
+  imageUrl = `${BaseApiUrl}${imagePath}`;
+}
+---
+
+<style is:global>
+* > .experience-card:nth-child(even) > .exp-header {
+  @media (min-width: 1024px) {
+    order: 1;
+  }
+}
+</style>
+
+<div class="experience-card grid gap-4 lg:grid-cols-2">
+  <div class="exp-header flex flex-col justify-center py-4 overflow-clip relative section-padding">
+    <div class="timespan flex gap-2 text-secondary-400">
+      // <p>{formatDate(experience.properties?.startTime)}</p>
+      -&gt;
+      <p>{formatDate(experience.properties?.endTime)}</p>
+    </div>
+
+    <h3 class="text-4xl font-sans mb-2">{experience.properties?.role}</h3>
+    <p class="text-xl font-sans">
+      {experience.properties?.organization}
+      {
+        experience.properties?.location 
+        && <span class="opacity-75">| {experience.properties?.location}</span>
+      }
+    </p>
+
+    {imageUrl === "" 
+      ? <Image
+          src={PlaceholderImage}
+          width={500}
+          height={200}
+          alt={experience.properties?.alternativeText ?? "Default background image for experience"}
+          loading="lazy" 
+          decoding="async"
+          class="w-full h-full absolute top-0 left-0 object-cover -z-30" 
+        />
+      : <Image
+          src={imageUrl}
+          width={500}
+          height={200}
+          alt={experience.properties?.alternativeText ?? "Default background image for experience"}
+          loading="lazy" 
+          decoding="async"
+          class="w-full h-full absolute top-0 left-0 object-cover -z-30" 
+        />
+    }
+
+    <!-- Darken the background -->
+    <div class="w-full h-full absolute top-0 left-0 bg-primary/75 -z-20">
+    </div>
+    <!-- Add a gradient to the background for better contrast -->
+    <div class="w-full h-full absolute top-0 left-0 mix-blend-multiply
+      bg-gradient-to-r from-primary to-transparent -z-10">
+    </div>
+  </div>
+
+  <div class="exp-body section-padding flex flex-col gap-4 justify-center px-5 sm:px-10">
+    <Fragment set:html={experience.properties?.description?.markup} />
+    <div class="flex gap-2 flex-wrap">
+      {experience.properties?.tags?.map(tag => (
+        <span class="border border-secondary px-6 py-1.5 rounded-full 
+          select-none pointer-default capitalize 
+          motion-safe:transition-all hover:bg-secondary">
+          {tag}
+        </span>
+      ))}
+    </div>
+  </div>
+</div>

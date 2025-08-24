@@ -60,6 +60,28 @@ export type ApiLinkModel = {
     linkType: LinkTypeModel;
 };
 
+export type ExperienceContentModel = IApiContentModelBase & {
+    contentType: 'experience';
+} & {
+    properties?: ExperiencePropertiesModel;
+};
+
+export type ExperienceContentResponseModel = IApiContentResponseModelBase & {
+    contentType: 'experience';
+} & ExperienceContentModel;
+
+export type ExperiencePropertiesModel = {
+    role?: string | null;
+    organization?: string | null;
+    location?: string | null;
+    description?: RichTextModel;
+    startTime?: string | null;
+    endTime?: string | null;
+    tags?: Array<string> | null;
+    image?: Array<IApiMediaWithCropsModel> | null;
+    alternativeText?: string | null;
+};
+
 export type ExpertiseCardElementModel = IApiElementModelBase & {
     contentType: 'expertiseCard';
 } & {
@@ -125,7 +147,7 @@ export type HttpValidationProblemDetails = ProblemDetails & {
     } | undefined;
 };
 
-export type IApiContentModel = HelloWorldContentModel | HomepageContentModel | AboutMeContentModel | ExpertiseContentModel | SkillsContentModel | ProjectsContentModel | ProjectDetailsContentModel;
+export type IApiContentModel = HelloWorldContentModel | HomepageContentModel | AboutMeContentModel | ExpertiseContentModel | SkillsContentModel | ProjectsContentModel | ProjectDetailsContentModel | ProfessionalBackgroundContentModel | ExperienceContentModel;
 
 export type IApiContentModelBase = IApiElementModelBase & {
     readonly contentType: string;
@@ -135,7 +157,7 @@ export type IApiContentModelBase = IApiElementModelBase & {
     route: ApiContentRouteModel;
 };
 
-export type IApiContentResponseModel = HelloWorldContentResponseModel | HomepageContentResponseModel | AboutMeContentResponseModel | ExpertiseContentResponseModel | SkillsContentResponseModel | ProjectsContentResponseModel | ProjectDetailsContentResponseModel;
+export type IApiContentResponseModel = HelloWorldContentResponseModel | HomepageContentResponseModel | AboutMeContentResponseModel | ExpertiseContentResponseModel | SkillsContentResponseModel | ProjectsContentResponseModel | ProjectDetailsContentResponseModel | ProfessionalBackgroundContentResponseModel | ExperienceContentResponseModel;
 
 export type IApiContentResponseModelBase = IApiContentModelBase & {
     contentType: 'IApiContentResponseModelBase';
@@ -255,6 +277,20 @@ export type ProblemDetails = {
     detail?: string | null;
     instance?: string | null;
     [key: string]: unknown | (string | null) | (string | null) | (number | null) | (string | null) | (string | null) | undefined;
+};
+
+export type ProfessionalBackgroundContentModel = IApiContentModelBase & {
+    contentType: 'professionalBackground';
+} & {
+    properties?: ProfessionalBackgroundPropertiesModel;
+};
+
+export type ProfessionalBackgroundContentResponseModel = IApiContentResponseModelBase & {
+    contentType: 'professionalBackground';
+} & ProfessionalBackgroundContentModel;
+
+export type ProfessionalBackgroundPropertiesModel = {
+    description?: RichTextModel;
 };
 
 export type ProgressBarElementModel = IApiElementModelBase & {
