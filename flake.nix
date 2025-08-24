@@ -20,6 +20,22 @@
           csharp-ls
           nodejs_24
         ];
+
+        shellHook = ''
+          FRONTEND_EXISTS="$(tmux list-windows | grep frontend)"
+          if [[ ! $FRONTEND_EXISTS ]]; then
+            tmux new-window -n frontend \
+              "nix develop --command zsh -ic 'cd frontend && npm run dev; exec zsh'"
+            (sleep 5; xdg-open http://localhost:4321) &
+          fi
+
+          BACKEND_EXISTS="$(tmux list-windows | grep backend)"
+          if [[ ! $BACKEND_EXISTS ]]; then
+            tmux new-window -n backend \
+              "nix develop --command zsh -ic 'cd backend && dotnet watch; exec zsh'"
+            (sleep 10; xdg-open http://localhost:46118/umbraco) &
+          fi
+        '';
       };
     };
 }

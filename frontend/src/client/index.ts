@@ -49,6 +49,17 @@ export type ApiContentStartItemModel = {
     path: string;
 };
 
+export type ApiLinkModel = {
+    readonly url?: string | null;
+    readonly queryString?: string | null;
+    readonly title?: string | null;
+    readonly target?: string | null;
+    readonly destinationId?: string | null;
+    readonly destinationType?: string | null;
+    route?: ApiContentRouteModel | null;
+    linkType: LinkTypeModel;
+};
+
 export type ExpertiseCardElementModel = IApiElementModelBase & {
     contentType: 'expertiseCard';
 } & {
@@ -114,7 +125,7 @@ export type HttpValidationProblemDetails = ProblemDetails & {
     } | undefined;
 };
 
-export type IApiContentModel = HelloWorldContentModel | HomepageContentModel | AboutMeContentModel | ExpertiseContentModel | SkillsContentModel;
+export type IApiContentModel = HelloWorldContentModel | HomepageContentModel | AboutMeContentModel | ExpertiseContentModel | SkillsContentModel | ProjectsContentModel | ProjectDetailsContentModel;
 
 export type IApiContentModelBase = IApiElementModelBase & {
     readonly contentType: string;
@@ -124,7 +135,7 @@ export type IApiContentModelBase = IApiElementModelBase & {
     route: ApiContentRouteModel;
 };
 
-export type IApiContentResponseModel = HelloWorldContentResponseModel | HomepageContentResponseModel | AboutMeContentResponseModel | ExpertiseContentResponseModel | SkillsContentResponseModel;
+export type IApiContentResponseModel = HelloWorldContentResponseModel | HomepageContentResponseModel | AboutMeContentResponseModel | ExpertiseContentResponseModel | SkillsContentResponseModel | ProjectsContentResponseModel | ProjectDetailsContentResponseModel;
 
 export type IApiContentResponseModelBase = IApiContentModelBase & {
     contentType: 'IApiContentResponseModelBase';
@@ -140,7 +151,7 @@ export type IApiContentResponseModelBase = IApiContentModelBase & {
     };
 };
 
-export type IApiElementModel = ExpertiseCardElementModel | ProgressBarElementModel | IconWithLabelElementModel;
+export type IApiElementModel = ExpertiseCardElementModel | ProgressBarElementModel | IconWithLabelElementModel | PersonElementModel;
 
 export type IApiElementModelBase = {
     readonly id: string;
@@ -212,6 +223,8 @@ export type ImageFocalPointModel = {
     top: number;
 };
 
+export type LinkTypeModel = 'Content' | 'Media' | 'External';
+
 export type PagedIApiContentResponseModel = {
     total: number;
     items: Array<IApiContentResponseModel>;
@@ -220,6 +233,19 @@ export type PagedIApiContentResponseModel = {
 export type PagedIApiMediaWithCropsResponseModel = {
     total: number;
     items: Array<IApiMediaWithCropsResponseModel>;
+};
+
+export type PersonElementModel = IApiElementModelBase & {
+    contentType: 'person';
+} & {
+    properties?: PersonPropertiesModel;
+};
+
+export type PersonPropertiesModel = {
+    displayName?: string | null;
+    role?: string | null;
+    comments?: string | null;
+    links?: Array<ApiLinkModel> | null;
 };
 
 export type ProblemDetails = {
@@ -240,6 +266,40 @@ export type ProgressBarElementModel = IApiElementModelBase & {
 export type ProgressBarPropertiesModel = {
     label?: string | null;
     value?: number | null;
+};
+
+export type ProjectDetailsContentModel = IApiContentModelBase & {
+    contentType: 'projectDetails';
+} & {
+    properties?: ProjectDetailsPropertiesModel;
+};
+
+export type ProjectDetailsContentResponseModel = IApiContentResponseModelBase & {
+    contentType: 'projectDetails';
+} & ProjectDetailsContentModel;
+
+export type ProjectDetailsPropertiesModel = {
+    tags?: Array<string> | null;
+    details?: RichTextModel;
+    startingTime?: string | null;
+    endTime?: string | null;
+    links?: Array<ApiLinkModel> | null;
+    team?: ApiBlockListModel;
+    images?: Array<IApiMediaWithCropsModel> | null;
+};
+
+export type ProjectsContentModel = IApiContentModelBase & {
+    contentType: 'projects';
+} & {
+    properties?: ProjectsPropertiesModel;
+};
+
+export type ProjectsContentResponseModel = IApiContentResponseModelBase & {
+    contentType: 'projects';
+} & ProjectsContentModel;
+
+export type ProjectsPropertiesModel = {
+    [key: string]: never;
 };
 
 export type RichTextModel = {

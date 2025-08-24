@@ -4,16 +4,9 @@ import Hero from "../components/Hero.astro";
 import AboutMe from "../components/AboutMe.astro";
 import Expertise from "../components/Expertise.astro";
 import Skills from "../components/Skills.astro";
+import Projects from "../components/Projects.astro";
 
 import "../styles/global.css";
-
-// const res = await fetch("http://localhost:46118/umbraco/delivery/api/v2/content/item/homepage");
-// if (!res.ok) {
-//   console.error("non-200 status code recived from backend", res.status);
-// } else {
-//   const homepageContent = await res.json();
-//   console.info(homepageContent)
-// }
 ---
 
 <Layout>
@@ -21,4 +14,5 @@ import "../styles/global.css";
   <AboutMe />
   <Expertise />
   <Skills />
+  <Projects />
 </Layout>
