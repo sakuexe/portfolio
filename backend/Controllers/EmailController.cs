@@ -1,30 +1,34 @@
 using System.Net;
 using System.Net.Mail;
+using backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Umbraco.Cms.Core.Configuration.Models;
+using Umbraco.Cms.Persistence.EFCore.Scoping;
 
 namespace backend.Controllers;
 
-public record ContactFormModel(string Name, string Email, string Subject, string Message);
+public record ContactFormModel(string Name, string Email, string? Subject, string Message);
 
 [ApiController]
 [Route("/api/email")]
 public class EmailController(
     IOptions<GlobalSettings> globalSettings,
     ILogger<EmailController> logger,
-    IWebHostEnvironment env
+    IWebHostEnvironment env,
+    IEFCoreScopeProvider<DatabaseContext> efCoreScopeProvider
 ) : Controller
 {
     private readonly GlobalSettings _globalSettings = globalSettings.Value;
     private readonly ILogger<EmailController> _logger = logger;
     private readonly IWebHostEnvironment _env = env;
+    private readonly IEFCoreScopeProvider<DatabaseContext> _efCoreScopeProvider = efCoreScopeProvider;
 
     private const string EmailRecipient = "saku.karttunen@gmail.com";
     private const string SenderName = "api.sakukarttunen.com";
 
     [HttpPost("contactform")]
-    public IActionResult ContactForm(ContactFormModel model)
+    public async Task<IActionResult> ContactForm(ContactFormModel model)
     {
         if (!AreSmtpSettingsValid())
             return StatusCode(StatusCodes.Status503ServiceUnavailable, "SMTP settings were not set correctly");
@@ -33,7 +37,37 @@ public class EmailController(
         if (!string.IsNullOrEmpty(emailError))
             return StatusCode(StatusCodes.Status503ServiceUnavailable, $"Email sending failed: {emailError}");
 
+        ContactFormSubmission submission = new() 
+        {
+            Name = model.Name,
+            Email = model.Email,
+            Subject = model.Subject,
+            Message = model.Message,
+            CreatedUTC = DateTime.UtcNow
+        };
+
+        using IEfCoreScope<DatabaseContext> scope = _efCoreScopeProvider.CreateScope();
+        await scope.ExecuteWithContextAsync<Task>(async db =>
+        {
+            await db.ContactFormSubmissions.AddAsync(submission);
+            await db.SaveChangesAsync();
+        });
+
+        scope.Complete();
         return Ok("Email sent succesfully");
+    }
+
+    [HttpGet("contactform/submissions")]
+    public async Task<IActionResult> ContactFormSubmissions()
+    {
+        using IEfCoreScope<DatabaseContext> scope = _efCoreScopeProvider.CreateScope();
+        IEnumerable<ContactFormSubmission> submissions = await scope.ExecuteWithContextAsync(async db =>
+        {
+            return db.ContactFormSubmissions;
+        });
+
+        scope.Complete();
+        return Ok(submissions);
     }
 
     private string? SendEmail(ContactFormModel model)

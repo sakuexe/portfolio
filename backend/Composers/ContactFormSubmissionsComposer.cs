@@ -4,8 +4,8 @@ using Umbraco.Cms.Core.Notifications;
 
 namespace backend.Composers;
 
-public class EmailSubmissionsComposer : IComposer
+public class ContactFormSubmissionsComposer : IComposer
 {
     public void Compose(IUmbracoBuilder builder) =>
-        builder.AddNotificationAsyncHandler<UmbracoApplicationStartedNotification, RunEmailSubmissionsMigration>();
+        builder.AddNotificationAsyncHandler<UmbracoApplicationStartedNotification, EfCoreMigration>();
 }
