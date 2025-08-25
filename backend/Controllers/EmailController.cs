@@ -10,25 +10,18 @@ public record ContactFormModel(string Name, string Email, string Subject, string
 
 [ApiController]
 [Route("/api/email")]
-public class EmailController : Controller
+public class EmailController(
+    IOptions<GlobalSettings> globalSettings,
+    ILogger<EmailController> logger,
+    IWebHostEnvironment env
+) : Controller
 {
-    private readonly GlobalSettings _globalSettings;
-    private readonly ILogger<EmailController> _logger;
-    private readonly IWebHostEnvironment _env;
+    private readonly GlobalSettings _globalSettings = globalSettings.Value;
+    private readonly ILogger<EmailController> _logger = logger;
+    private readonly IWebHostEnvironment _env = env;
 
     private const string EmailRecipient = "saku.karttunen@gmail.com";
     private const string SenderName = "api.sakukarttunen.com";
-
-    public EmailController(
-        ILogger<EmailController> logger, 
-        IOptions<GlobalSettings> globalSettings,
-        IWebHostEnvironment env
-    )
-    {
-        _globalSettings = globalSettings.Value;
-        _logger = logger;
-        _env = env;
-    }
 
     [HttpPost("contactform")]
     public IActionResult ContactForm(ContactFormModel model)

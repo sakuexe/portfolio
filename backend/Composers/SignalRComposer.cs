@@ -2,6 +2,8 @@ using backend.Notifications;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.Notifications;
 
+namespace backend.Composers;
+
 public class SignalRComposer : IComposer
 {
     public void Compose(IUmbracoBuilder builder)

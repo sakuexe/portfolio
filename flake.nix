@@ -20,6 +20,7 @@
           csharp-ls
           nodejs_24
           smtp4dev
+          dotnet-ef
         ];
 
         shellHook = ''
