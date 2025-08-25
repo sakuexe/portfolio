@@ -14,14 +14,20 @@ public class EmailController : Controller
 {
     private readonly GlobalSettings _globalSettings;
     private readonly ILogger<EmailController> _logger;
+    private readonly IWebHostEnvironment _env;
 
     private const string EmailRecipient = "saku.karttunen@gmail.com";
     private const string SenderName = "api.sakukarttunen.com";
 
-    public EmailController(ILogger<EmailController> logger, IOptions<GlobalSettings> globalSettings)
+    public EmailController(
+        ILogger<EmailController> logger, 
+        IOptions<GlobalSettings> globalSettings,
+        IWebHostEnvironment env
+    )
     {
         _globalSettings = globalSettings.Value;
         _logger = logger;
+        _env = env;
     }
 
     [HttpPost("contactform")]
@@ -45,7 +51,7 @@ public class EmailController : Controller
             _globalSettings.Smtp!.Username,
             _globalSettings.Smtp!.Password
         );
-        smtp.EnableSsl = true;
+        smtp.EnableSsl = _env.IsProduction();
 
         var mail = new MailMessage
         {

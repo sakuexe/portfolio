@@ -19,14 +19,10 @@
           dotnetCorePackages.dotnet_9.runtime
           csharp-ls
           nodejs_24
+          smtp4dev
         ];
 
         shellHook = ''
-          # to make the email sending work locally the `.env.local` file 
-          # should include the following variables (no quotes)
-          export UMBRACO__CMS__GLOBAL__SMTP__USERNAME=$(grep "UMBRACO__CMS__GLOBAL__SMTP__USERNAME" backend/.env | cut -d"=" -f2)
-          export UMBRACO__CMS__GLOBAL__SMTP__PASSWORD=$(grep "UMBRACO__CMS__GLOBAL__SMTP__PASSWORD" backend/.env | cut -d"=" -f2)
-
           FRONTEND_EXISTS="$(tmux list-windows | grep frontend)"
           if [[ ! $FRONTEND_EXISTS ]]; then
             tmux new-window -n frontend \
