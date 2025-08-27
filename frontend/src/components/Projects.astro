@@ -71,6 +71,7 @@ function getCategories(project: ProjectDetailsContentModel): string[] {
 #portfolio-filter > li > button > sup {
   text-decoration: none;
   font-size: 16px;
+  color: var(--color-secondary-text);
 }
 
 #portfolio-filter > li.active > button > span {
@@ -128,7 +129,7 @@ function getCategories(project: ProjectDetailsContentModel): string[] {
       <li class="active">
         <button type="button">
           <span>All</span>
-          <sup class="text-base text-secondary-400">{ projects.total }</sup>
+          <sup>{ projects.total }</sup>
         </button>
       </li>
       <li class="category-seperator">/</li>

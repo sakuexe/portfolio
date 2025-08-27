@@ -29,9 +29,39 @@ experiences.items = experiences.items.sort((a, b) => {
 experiences.items = [...ongoingExperiences, ...experiences.items];
 ---
 
-<section id="experience" class="space-y-16 py-20 max-w-content mx-auto no-container">
+<style>
+#experience {
+  padding-block: 5rem;
+  max-width: 100rem;
+  margin-inline: auto;
+}
 
-  <div class="max-w-4xl space-y-4 section-padding">
+#experience > *:not(:last-child) {
+  margin-bottom: 4rem;
+}
+
+#experience > div:has(.subheader) {
+  max-width: 56rem;
+}
+
+#experience > div:has(.subheader) > *:not(:last-child) {
+  margin-bottom: 1rem;
+}
+
+.experience-list {
+  display: grid;
+  /* make all the rows the same height (based on the tallest row)*/
+  grid-auto-rows: 1fr;
+  gap: 4rem;
+  @media (min-width: 1024px) {
+    row-gap: 2.5rem;
+  }
+}
+</style>
+
+<section id="experience" class="no-container">
+
+  <div class="section-padding">
     <div class="subheader">
       <p><span>// 05</span> Experience</p>
       <h2>{model.name}</h2>
@@ -39,7 +69,7 @@ experiences.items = [...ongoingExperiences, ...experiences.items];
     <Fragment set:html={model.properties?.description?.markup} />
   </div>
   
-  <div class="grid gap-y-16 lg:gap-y-10">
+  <div class="experience-list">
     {experiences.items.map(exp => (
         <ExperienceCard experience={exp} />
     ))}
