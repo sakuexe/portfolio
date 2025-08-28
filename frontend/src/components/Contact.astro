@@ -2,11 +2,9 @@
 import EmailForm from "../components/EmailForm.astro";
 import type { ContactContentModel } from "../client";
 import { GetContent } from "../utils/umbraco";
-import GithubIcon from "../assets/icons/github.svg";
-import InstagramIcon from "../assets/icons/instagram.svg";
-import LinkedInIcon from "../assets/icons/linkedin.svg";
+import LinkWithIcon from "../components/LinkWithIcon.astro"
 
-const model = await GetContent<ContactContentModel>("contact");
+const model = await GetContent<ContactContentModel>("/home/contact");
 ---
 
 <style>
@@ -98,12 +96,7 @@ div:has(>.text-content) {
 
         <div class="links-container">
           {model.properties?.links?.map(link => (
-            <div>
-              { link.url?.includes("github.com") && <GithubIcon /> }
-              { link.url?.includes("instagram.com") && <InstagramIcon /> }
-              { link.url?.includes("linkedin.com") && <LinkedInIcon /> }
-              <a href={link.url} target={link?.target}>{link?.title}</a>
-            </div>
+            <LinkWithIcon link={link} />
           ))}
         </div>
 

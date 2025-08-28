@@ -6,8 +6,8 @@ import type {
 import { GetContent, GetChildContent } from "../utils/umbraco";
 import ExperienceCard from "./ExperienceCard.astro"
 
-const model = await GetContent<ProfessionalBackgroundContentModel>("professional-background");
-const experiences = await GetChildContent<ExperienceContentModel>("/professional-background")
+const model = await GetContent<ProfessionalBackgroundContentModel>("/home/professional-background");
+const experiences = await GetChildContent<ExperienceContentModel>("/home/professional-background")
 
 const ongoingExperiences = experiences.items
 .filter(exp => !exp.properties?.endTime)

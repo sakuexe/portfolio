@@ -4,7 +4,7 @@ import { GetContent, TypedBlockList } from "../utils/umbraco"
 import SkLogo from "../assets/images/sklogo.svg"
 import InlineSvg from "../utils/svg_inliner.ts";
 
-const model = await GetContent<ExpertiseContentModel>("expertise")
+const model = await GetContent<ExpertiseContentModel>("/home/expertise")
 const cards = TypedBlockList<ExpertiseCardElementModel>(model.properties?.cards);
 ---
 

@@ -10,7 +10,7 @@ import Phone from "../assets/images/phone.webp";
 
 const othersCategory = "Other";
 
-const model = await GetContent<ProjectsContentModel>("projects");
+const model = await GetContent<ProjectsContentModel>("/projects");
 const projects = await GetChildContent<ProjectDetailsContentModel>("/projects");
 // projects.items.sort((a, b) => a.properties?.startingTime - b.properties?.startingTime)
 

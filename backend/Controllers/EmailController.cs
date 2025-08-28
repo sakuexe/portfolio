@@ -36,13 +36,25 @@ public class EmailController(
 
         string? emailError = SendEmail(model);
         if (!string.IsNullOrEmpty(emailError))
-            return StatusCode(StatusCodes.Status503ServiceUnavailable, $"Email sending failed: {emailError}");
+            _logger.LogWarning("Email was not be sent because of an error: {errorMessage}", emailError);
 
         var submission = new ContactFormSubmission(model.Name, model.Email, model.Subject, model.Message, DateTime.UtcNow);
 
         using var scope = _scopeProvider.CreateScope();
         await scope.Database.InsertAsync<ContactFormSubmission>(submission);
-        scope.Complete(); // remember to close the scope (I forgor and spent too much time on it)
+        bool saveSuccess = scope.Complete(); // remember to close the scope (I forgor and spent too much time on it)
+        if (!saveSuccess)
+            _logger.LogWarning("Email submission could not be saved to the database");
+
+        if (!string.IsNullOrEmpty(emailError) && !saveSuccess)
+        {
+            _logger.LogError(
+                "Email submission failed both saving and sending. Name: {name}, Email: {email}, Subject: {subject}, Message: {message}",
+                model.Name, model.Email, 
+                model.Subject, model.Message
+            );
+            return StatusCode(StatusCodes.Status503ServiceUnavailable, $"Email could not be recieved");
+        }
 
         return Ok("Email sent succesfully");
     }

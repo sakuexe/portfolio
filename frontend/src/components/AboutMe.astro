@@ -4,7 +4,7 @@ import { GetContent, BaseApiUrl } from "../utils/umbraco"
 import SkLogo from "../assets/images/sklogo.svg"
 import SkLogoRaw from "../assets/images/sklogo.svg?raw"
 
-const model = await GetContent<AboutMeContentModel>("about-me")
+const model = await GetContent<AboutMeContentModel>("/home/about-me")
 ---
 
 <style>
