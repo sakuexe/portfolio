@@ -1,10 +1,14 @@
 ---
-import type { AboutMeContentModel } from "../client";
-import { GetContent, BaseApiUrl } from "../utils/umbraco"
+import type { AboutMeElementModel } from "../client";
+import { BaseApiUrl } from "../utils/umbraco"
 import SkLogo from "../assets/images/sklogo.svg"
 import SkLogoRaw from "../assets/images/sklogo.svg?raw"
 
-const model = await GetContent<AboutMeContentModel>("/home/about-me")
+interface Props {
+  model: AboutMeElementModel;
+}
+
+const { model } = Astro.props;
 ---
 
 <style>
@@ -28,10 +32,7 @@ const model = await GetContent<AboutMeContentModel>("/home/about-me")
       <h2>Who Am I?</h2>
     </div>
 
-    <p>
-      {model.properties?.description}
-    </p>
-    <p set:html={model.properties?.thankYouMessage?.markup}></p>
+    <Fragment set:html={model.properties?.description?.markup} />
 
     { 
       model.properties?.cvFile && (

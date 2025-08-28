@@ -1,23 +1,28 @@
 ---
 import type { 
-  ProjectsContentModel,
+  ProjectsElementModel,
   ProjectDetailsContentModel,
 } from "../client";
-import { GetContent, GetChildContent } from "../utils/umbraco";
+import { GetChildContent } from "../utils/umbraco";
 import ProjectThumbnail from "./ProjectThumbnail.astro"
 import { Image } from "astro:assets";
 import Phone from "../assets/images/phone.webp";
 
 const othersCategory = "Other";
 
-const model = await GetContent<ProjectsContentModel>("/projects");
+interface Props {
+  model: ProjectsElementModel
+};
+
+const { model } = Astro.props;
+
 const projects = await GetChildContent<ProjectDetailsContentModel>("/projects");
 // projects.items.sort((a, b) => a.properties?.startingTime - b.properties?.startingTime)
 
-const categories: string[] = model.properties?.highlightedTags || []
+const categories: string[] = model.properties?.filterableCategories || []
 categories.push(othersCategory)
 
-let projectHighlight = model.properties?.projectHighlight?.pop();
+let projectHighlight = model.properties?.featuredProject?.pop();
 if (!projectHighlight) {
   projectHighlight = projects.items.random()
 }
@@ -87,8 +92,8 @@ function getCategories(project: ProjectDetailsContentModel): string[] {
   <div class="grid max-w-6xl gap-x-8 lg:mx-auto md:grid-cols-2 md:col-span-full">
     <div class="space-y-4 max-w-xl mx-auto">
       <div class="subheader">
-        <p><span>// 04</span> {model.name}</p>
-        <h2>My Portfolio</h2>
+        <p><span>// 04</span> {model.contentType}</p>
+        <h2>{model.properties?.heading}</h2>
       </div>
       <p>
         Here you can browse some of my previous projects and works. You can click

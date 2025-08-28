@@ -3,7 +3,7 @@ import type {
   ProjectDetailsContentModel,
   PersonElementModel
 } from "../../client";
-import { GetContent, GetChildContent, BaseApiUrl } from "../../utils/umbraco";
+import { GetContent, GetChildContent } from "../../utils/umbraco";
 import Layout from "../../layouts/Layout.astro";
 import LinkWithIcon from "../../components/LinkWithIcon.astro";
 
@@ -13,13 +13,16 @@ import "../../styles/global.css";
 export async function getStaticPaths() {
   const projects = await GetChildContent<ProjectDetailsContentModel>("/projects");
   return projects.items.map(project => {
-    return { params: { path: project.route.path }}
+    const cleanedPath = project.route.path.replace("/projects", "");
+    return { 
+      params: { path: cleanedPath },
+    }
   })
 }
 
 const { path } = Astro.params;
 
-const model = await GetContent<ProjectDetailsContentModel>(path);
+const model = await GetContent<ProjectDetailsContentModel>(`/projects/${path}`);
 const teamMembers = model.properties?.team?.items.map(item => item.content) as PersonElementModel[]
 ---
 

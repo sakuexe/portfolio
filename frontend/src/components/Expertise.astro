@@ -1,10 +1,17 @@
 ---
-import type { ExpertiseContentModel, ExpertiseCardElementModel } from "../client";
-import { GetContent, TypedBlockList } from "../utils/umbraco"
+import type { 
+  ExpertiseCardElementModel,
+  ExpertiseElementModel
+} from "../client";
+import { TypedBlockList } from "../utils/umbraco"
 import SkLogo from "../assets/images/sklogo.svg"
 import InlineSvg from "../utils/svg_inliner.ts";
 
-const model = await GetContent<ExpertiseContentModel>("/home/expertise")
+interface Props {
+  model: ExpertiseElementModel;
+}
+
+const { model } = Astro.props;
 const cards = TypedBlockList<ExpertiseCardElementModel>(model.properties?.cards);
 ---
 

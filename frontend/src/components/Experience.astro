@@ -1,13 +1,17 @@
 ---
 import type { 
-  ProfessionalBackgroundContentModel,
+  ExperiencesElementModel,
   ExperienceContentModel,
 } from "../client";
-import { GetContent, GetChildContent } from "../utils/umbraco";
+import { GetChildContent } from "../utils/umbraco";
 import ExperienceCard from "./ExperienceCard.astro"
 
-const model = await GetContent<ProfessionalBackgroundContentModel>("/home/professional-background");
-const experiences = await GetChildContent<ExperienceContentModel>("/home/professional-background")
+interface Props {
+  model: ExperiencesElementModel;
+}
+const { model } = Astro.props;
+
+const experiences = await GetChildContent<ExperienceContentModel>("/professional-background")
 
 const ongoingExperiences = experiences.items
 .filter(exp => !exp.properties?.endTime)
@@ -64,7 +68,7 @@ experiences.items = [...ongoingExperiences, ...experiences.items];
   <div class="section-padding">
     <div class="subheader">
       <p><span>// 05</span> Experience</p>
-      <h2>{model.name}</h2>
+      <h2>{model.properties?.heading}</h2>
     </div>
     <Fragment set:html={model.properties?.description?.markup} />
   </div>

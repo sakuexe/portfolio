@@ -1,10 +1,13 @@
 ---
 import EmailForm from "../components/EmailForm.astro";
-import type { ContactContentModel } from "../client";
-import { GetContent } from "../utils/umbraco";
+import type { ContactElementModel } from "../client";
 import LinkWithIcon from "../components/LinkWithIcon.astro"
 
-const model = await GetContent<ContactContentModel>("/home/contact");
+interface Props {
+  model: ContactElementModel;
+}
+
+const { model } = Astro.props;
 ---
 
 <style>

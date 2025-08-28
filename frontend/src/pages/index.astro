@@ -1,4 +1,9 @@
 ---
+import type { 
+  SiteContentModel,
+} from "../client";
+import { GetContent } from "../utils/umbraco"
+
 import Layout from "../layouts/Layout.astro";
 import Hero from "../components/Hero.astro";
 import AboutMe from "../components/AboutMe.astro";
@@ -9,14 +14,30 @@ import Experience from "../components/Experience.astro";
 import Contact from "../components/Contact.astro";
 
 import "../styles/global.css";
+
+const model = await GetContent<SiteContentModel>("/");
 ---
 
 <Layout>
   <Hero />
-  <AboutMe />
-  <Expertise />
-  <Skills />
-  <Projects />
-  <Experience />
-  <Contact />
+  {model.properties?.pageContent?.items?.map((section) => {
+    const type = section.content?.contentType;
+
+    switch (type) {
+      case 'aboutMe':
+        return <AboutMe model={section.content} />;
+      case 'expertise':
+        return <Expertise model={section.content} />;
+      case 'skills':
+        return <Skills model={section.content} />;
+      case 'projects':
+        return <Projects model={section.content} />;
+      case 'experiences':
+        return <Experience model={section.content} />;
+      case 'contact':
+        return <Contact model={section.content} />;
+      default:
+        return null;
+    }
+  })}
 </Layout>

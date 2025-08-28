@@ -1,13 +1,17 @@
 ---
 import type { 
-  SkillsContentModel,
+  SkillsElementModel,
   ProgressBarElementModel,
   IconWithLabelElementModel,
 } from "../client";
-import { GetContent, TypedBlockList } from "../utils/umbraco";
+import { TypedBlockList } from "../utils/umbraco";
 import SkillBadge from "./SkillBadge.astro";
 
-const model = await GetContent<SkillsContentModel>("/home/skills")
+interface Props {
+  model: SkillsElementModel;
+}
+const { model } = Astro.props;
+
 const allSkills = TypedBlockList<ProgressBarElementModel | IconWithLabelElementModel>(model.properties?.skillItems);
 
 const { progressBars, iconWithLabels: iconsWithLabels } = allSkills.reduce(
