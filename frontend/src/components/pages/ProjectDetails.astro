@@ -3,26 +3,16 @@ import type {
   ProjectDetailsContentModel,
   PersonElementModel
 } from "../../client";
-import { GetContent, GetChildContent } from "../../utils/umbraco";
-import Layout from "../../layouts/Layout.astro";
 import LinkWithIcon from "../../components/LinkWithIcon.astro";
 
 import "../../styles/global.css";
 
-// https://docs.astro.build/en/guides/routing/#static-ssg-mode
-export async function getStaticPaths() {
-  const projects = await GetChildContent<ProjectDetailsContentModel>("/projects");
-  return projects.items.map(project => {
-    const cleanedPath = project.route.path.replace("/projects", "");
-    return { 
-      params: { path: cleanedPath },
-    }
-  })
+interface Props {
+  model: ProjectDetailsContentModel
 }
 
-const { path } = Astro.params;
+const { model } = Astro.props;
 
-const model = await GetContent<ProjectDetailsContentModel>(`/projects/${path}`);
 const teamMembers = model.properties?.team?.items.map(item => item.content) as PersonElementModel[]
 ---
 
@@ -42,8 +32,7 @@ const teamMembers = model.properties?.team?.items.map(item => item.content) as P
 }
 </style>
 
-<Layout>
-  <section class="no-container mt-16 max-w-content mx-auto">
+<section class="no-container mt-16 max-w-content mx-auto">
 
   <div class="max-h-96 overflow-clip relative w-full 
     h-full shadow-inner aspect-video motion-safe:transition-[max-height]">
@@ -135,5 +124,3 @@ const teamMembers = model.properties?.team?.items.map(item => item.content) as P
 
   </div>
 </section>
-
-</Layout>

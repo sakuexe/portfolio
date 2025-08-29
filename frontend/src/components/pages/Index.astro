@@ -1,0 +1,39 @@
+---
+import type { SiteContentModel, } from "../../client";
+
+import Hero from "../Hero.astro";
+import AboutMe from "../AboutMe.astro";
+import Expertise from "../Expertise.astro";
+import Skills from "../Skills.astro";
+import Projects from "../Projects.astro";
+import Experience from "../Experience.astro";
+import Contact from "../Contact.astro";
+
+interface Props {
+  model: SiteContentModel
+}
+
+const { model } = Astro.props;
+---
+
+<Hero />
+{model.properties?.pageContent?.items?.map((section) => {
+  const type = section.content?.contentType;
+
+  switch (type) {
+    case 'aboutMe':
+      return <AboutMe model={section.content} />;
+    case 'expertise':
+      return <Expertise model={section.content} />;
+    case 'skills':
+      return <Skills model={section.content} />;
+    case 'projects':
+      return <Projects model={section.content} />;
+    case 'experiences':
+      return <Experience model={section.content} />;
+    case 'contact':
+      return <Contact model={section.content} />;
+    default:
+      return null;
+  }
+})}

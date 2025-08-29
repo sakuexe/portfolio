@@ -1,0 +1,25 @@
+---
+import type { GetStaticPaths } from "astro";
+import type { PagedIApiContentResponseModel } from "../client";
+import { ApiUrl } from "../utils/umbraco";
+import Layout from "../layouts/Layout.astro";
+import Index from "../components/pages/Index.astro";
+import ProjectDetails from "../components/pages/ProjectDetails.astro";
+
+export const getStaticPaths = (async () => {
+  const res = await fetch(`${ApiUrl}/content`)
+  const pages = await res.json() as PagedIApiContentResponseModel;
+
+  return pages.items.map((page: any) => ({
+    params: { path: page.route.path },
+    props: { model: page }
+  }))
+}) satisfies GetStaticPaths;
+
+const { model } = Astro.props;
+---
+
+<Layout>
+  { model.contentType === "site" && <Index model={model} /> }
+  { model.contentType === "projectDetails" && <ProjectDetails model={model}/> }
+</Layout>

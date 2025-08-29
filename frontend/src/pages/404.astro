@@ -1,0 +1,49 @@
+---
+import Layout from "../layouts/Layout.astro"
+const currentPath = Astro.url.pathname;
+---
+
+<style is:global>
+main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+main > * {
+  padding: 0 !important;
+}
+</style>
+
+<style>
+code {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: var(--color-bg-secondary);
+  padding: 0.25rem 0.5rem !important;
+  border: 1px solid var(--color-primary-900);
+}
+
+code > span {
+  color: var(--color-secondary-400);
+}
+
+pre > span {
+  color: var(--color-accent);
+}
+</style>
+
+<Layout>
+  <pre>
+
+&#123;
+    <span>&quot;statusCode&quot;</span>: 404,
+    <span>&quot;status&quot;</span>: "Not Found",
+    <span>&quot;message&quot;</span>: "The page you're looking for does not exist",
+    <span>&quot;homeUrl&quot;</span>: "<a href="/">https://sakukarttunen.com</a>"
+&#125;
+    
+  </pre>
+</Layout>
