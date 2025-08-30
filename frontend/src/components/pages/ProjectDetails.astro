@@ -5,6 +5,7 @@ import type {
 } from "../../client";
 import { BaseApiUrl } from "../../utils/umbraco";
 import LinkWithIcon from "../../components/LinkWithIcon.astro";
+import { Picture } from "astro:assets";
 
 import "../../styles/global.css";
 
@@ -20,55 +21,73 @@ function formatDate() {
   const startDate = model.properties?.startingTime ? new Date(model.properties?.startingTime) : null;
   const endDate = model.properties?.endTime ? new Date(model.properties?.endTime) : null;
 
-  return `
-    ${startDate?.getDay()}.${startDate?.getMonth()}.${startDate?.getFullYear()} 
-    -> 
-    ${endDate?.getDay()}.${endDate?.getMonth()}.${endDate?.getFullYear()}
-  `;
+  let formattedString = "";
+  formattedString += startDate ? `${startDate?.getDay()}.${startDate?.getMonth()}.${startDate?.getFullYear()}` : "";
+  formattedString += " -> ";
+  formattedString += endDate ? `${endDate?.getDay()}.${endDate?.getMonth()}.${endDate?.getFullYear()}` : "";
+
+  return formattedString;
 }
 
 const imageUrl = model.properties?.image?.[0].url ? `${BaseApiUrl}${model.properties?.image?.[0].url}` : null;
 ---
 
 <style>
-/* <div class="w-full h-1/2 bg-gradient-to-t from-primary to-transparent  */
-/* absolute bottom-0 left-0 z-10"></div> */
-.grid-pattern::after {
+/* gradient to mix the image more with the overall style */
+.image-container::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  z-index: 1;
+  background: linear-gradient(to top, var(--color-primary), transparent);
+  pointer-events: none;
+}
+
+/* color the image to match the theme */
+.image-container:has(img)::after {
   content: "";
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 1;
-  /* background-image: linear-gradient(from bottom, var(--color-primary) 0%, transparent 100%); */
-  background-image: linear-gradient(from bottom, red 0%, transparent 100%);
+  z-index: 2;
+  background-color: var(--color-secondary);
+  mix-blend-mode: multiply;
+  opacity: 0.25;
+  backdrop-filter: saturate(0);
+  pointer-events: none;
+}
+
+.grid-pattern {
+  opacity: 0.5;
+  aspect-ratio: 16/9;
+}
+
+picture > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 </style>
 
 <section class="no-container mt-16 max-w-content mx-auto">
 
-  <div class="max-h-96 overflow-clip relative w-full 
+  <div class="image-container max-h-96 overflow-clip relative w-full 
     h-full shadow-inner aspect-video motion-safe:transition-[max-height]">
-  { !imageUrl
-    ? <div class="grid-pattern opacity-50 w-full aspect-video"></div>
-  : (<img 
-    id="portfolio-image"
-    src={imageUrl}
-    alt={model.properties?.altText}
-    loading="lazy" 
-    decoding="async"
-    class="w-full h-full object-cover saturate-0
-    motion-safe:transition-all motion-safe:group-hover:scale-110 group-hover:saturate-50">
-      <button type="button" id="expand" 
-        class="absolute bottom-0 right-0 bg-primary px-6 py-2 rounded-tl-xl z-20 ">Expand</button>
-      <div class="w-full h-1/2 bg-gradient-to-t from-primary to-transparent 
-      absolute bottom-0 left-0 z-10 max-h-40 opacity-50"></div>)
+    { imageUrl && <Picture 
+        id="portfolio-image"
+        src={imageUrl}
+        alt={model.properties?.altText ?? "placeholder image"}
+        width={1280}
+        height={720}
+        layout="full-width"
+        formats={["avif", "webp", "jpeg"]}
+      />
     }
-    <!-- Color the black and white images to match the theme -->
-    <div class="bg-secondary h-full w-full opacity-25 mix-blend-multiply
-    absolute bottom-0 left-0 motion-safe:transition-all group-hover:opacity-25">
-    </div>
   </div>
 
   <div class="px-5 py-8 grid gap-y-6 gap-x-16 sm:px-10 xl:grid-cols-3">
@@ -106,8 +125,8 @@ const imageUrl = model.properties?.image?.[0].url ? `${BaseApiUrl}${model.proper
           <p><span class="text-secondary-400">//</span> Credits</p>
           <h2 class="text-4xl font-bold font-sans">The Team</h2>
         </div>
-        { teamMembers.length == 0 && <p>Just me</p> }
-        { teamMembers.map(member => (
+        { !teamMembers && <p>Just me</p> }
+        { teamMembers?.map(member => (
           <div class="flex gap-2 items-center">
             <ul>
               <li>

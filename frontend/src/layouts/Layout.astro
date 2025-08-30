@@ -3,11 +3,34 @@ import Nav from "../components/Nav.astro"
 import MobileNav from "../components/MobileNav.astro"
 import Footer from "../components/Footer.astro"
 import UmbracoHotReload from "../components/UmbracoHotReload.astro"
+import SeoImage from "../assets/images/callingcard.webp";
 
 import "../utils/extensions";
 import "../styles/global.css";
+import type { ImageMetadata } from "astro";
 
 const isDev = import.meta.env.DEV;
+
+interface Props {
+  title: string;
+  description?: string;
+  keywords?: string[];
+  previewImage?: ImageMetadata;
+  index?: boolean;
+  follow?: boolean;
+}
+
+const { 
+  title = "Saku's portfolio",
+  description = "The portfolio website of Saku Karttunen, a fullstack software engineer from Finland",
+  keywords = ["saku karttunen", "portfolio", "fullstack developer", "software engineer", "finland"],
+  previewImage = SeoImage,
+  index = false,
+  follow = true,
+} = Astro.props;
+
+const domain = "https://sakukarttunen.com";
+const author = "Saku Karttunen";
 ---
 
 <!doctype html>
@@ -15,9 +38,38 @@ const isDev = import.meta.env.DEV;
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
+
+		<link rel="icon" href="/favicon.ico" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
 		<meta name="generator" content={Astro.generator} />
-		<title>Saku's Portfolio</title>
+    <title>{title}</title>
+
+    <!-- SEO tags -->
+    <meta property="author" content={author} />
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:site_name" content={title} />
+    <meta property="og:url" content={Astro.url.href} />
+    <meta property="og:type" content="website">
+    <meta property="og:image" content={previewImage.src} />
+    <meta property="og:image:alt" content="Logo with the lettes S and K in front of a spiral pattern with the text: Saku Karttunen" />
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="twitter:domain" content={Astro.url.host}>
+    <meta property="twitter:url" content={Astro.url.href}>
+    <meta name="twitter:image" content={previewImage.src}>
+
+    <!-- Page specific meta tags -->
+    <meta name="description" content={description}>
+    <meta name="og:description" content={description}>
+    <meta name="og:title" content={title}>
+    <meta name="keywords" content={keywords.join(",")}>
+    <meta name="robots" content={`${index ? "index" : "noindex"}, ${follow ? "follow" : "nofollow"}`}>
+    <link rel="canonical" href={`${domain}${Astro.url.pathname}`}>
 	</head>
 	<body class="text-primary-100 bg-primary text-lg font-mono leading-relaxed min-w-[356px]">
     <Nav />

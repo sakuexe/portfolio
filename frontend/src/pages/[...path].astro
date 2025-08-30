@@ -1,6 +1,7 @@
 ---
 import type { GetStaticPaths } from "astro";
-import type { PagedIApiContentResponseModel } from "../client";
+import type { IApiContentModel } from "../client";
+import type { UmbracoChildContents } from "../utils/umbraco";
 import { ApiUrl } from "../utils/umbraco";
 import Layout from "../layouts/Layout.astro";
 import Index from "../components/pages/Index.astro";
@@ -8,24 +9,33 @@ import ProjectDetails from "../components/pages/ProjectDetails.astro";
 import Default from "../components/pages/Default.astro";
 
 export const getStaticPaths = (async () => {
-  const res = await fetch(`${ApiUrl}/content?expand=all`)
-  const pages = await res.json() as PagedIApiContentResponseModel;
-  console.log(pages);
+  const res = await fetch(`${ApiUrl}/content`)
+  const pages = await res.json() as UmbracoChildContents<IApiContentModel>;
 
-  console.log(pages.items.map((page: any) => page.route.path));
-  return pages.items.map((page: any) => ({
+  return pages.items.map(page => ({
     params: { path: page.route.path },
     props: { model: page }
   }))
 }) satisfies GetStaticPaths;
 
 const { model } = Astro.props;
-
 const allowedContentTypes = ["site", "projectDetails"];
 ---
 
-<Layout>
-  { model.contentType === allowedContentTypes[0] && <Index model={model} /> }
-  { model.contentType === allowedContentTypes[1] && <ProjectDetails model={model}/> }
-  { !allowedContentTypes.includes(model.contentType) && <Default /> }
-</Layout>
+{ model.contentType === "site" && (
+  <Layout title="Saku's portfolio">
+    <Index model={model} />
+  </Layout>
+) }
+
+{ model.contentType === "projectDetails" && (
+  <Layout title={model.name ?? "Project details"}>
+    <ProjectDetails model={model}/> 
+  </Layout>
+) }
+
+{ !allowedContentTypes.includes(model.contentType) && (
+  <Layout title={"Template not found"}>
+    <Default/> 
+  </Layout>
+) }
