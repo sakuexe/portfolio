@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 
 // https://astro.build/config
 export default defineConfig({
+  site: "https://sakukarttunen.com",
   vite: {
     plugins: [tailwindcss()],
     resolve: {
