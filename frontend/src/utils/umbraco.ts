@@ -2,7 +2,8 @@ import type {
   IApiContentModelBase, 
   IApiContentModel,
   IApiElementModel,
-  ApiBlockListModel
+  ApiBlockListModel,
+  SeoPropertiesPropertiesModel
 } from "../client";
 
 export const BaseApiUrl =
@@ -55,4 +56,15 @@ export async function GetChildContent<T extends IApiContentModel>(path: string):
 export function TypedBlockList<T extends IApiElementModel>(blocklist: ApiBlockListModel | undefined | null): T[] {
   if (!blocklist) throw new Error(`Passed blocklist was null or undefined`)
   return blocklist.items.map((item: any) => item.content as T)
+}
+
+export function GetSeoProperties(model: IApiContentModel): SeoPropertiesPropertiesModel {
+  return {
+    seoTitle: model.properties?.seoTitle ?? model.name,
+    seoDescription: model.properties?.seoDescription,
+    isIndexed: model.properties?.isIndexed,
+    canFollow: model.properties?.canFollow,
+    seoPreviewImage: model.properties?.seoPreviewImage,
+    seoKeywords: model.properties?.seoKeywords 
+  };
 }

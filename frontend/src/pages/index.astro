@@ -1,0 +1,42 @@
+---
+import type { SiteContentModel, } from "../client";
+import { GetContent, GetSeoProperties } from "../utils/umbraco";
+
+import Layout from "../layouts/Layout.astro";
+import Hero from "../components/Hero.astro";
+import AboutMe from "../components/AboutMe.astro";
+import Expertise from "../components/Expertise.astro";
+import Skills from "../components/Skills.astro";
+import Projects from "../components/Projects.astro";
+import Experience from "../components/Experience.astro";
+import Contact from "../components/Contact.astro";
+
+const model = await GetContent<SiteContentModel>("/");
+const seoProperties = GetSeoProperties(model);
+---
+
+<Layout seoProperties={seoProperties}>
+
+<Hero />
+{model.properties?.pageContent?.items?.map((section) => {
+  const type = section.content?.contentType;
+
+  switch (type) {
+    case 'aboutMe':
+      return <AboutMe model={section.content} />;
+    case 'expertise':
+      return <Expertise model={section.content} />;
+    case 'skills':
+      return <Skills model={section.content} />;
+    case 'projects':
+      return <Projects model={section.content} />;
+    case 'experiences':
+      return <Experience model={section.content} />;
+    case 'contact':
+      return <Contact model={section.content} />;
+    default:
+      return null;
+  }
+})}
+
+</Layout>
