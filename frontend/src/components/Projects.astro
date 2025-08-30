@@ -20,7 +20,9 @@ const projects = await GetChildContent<ProjectDetailsContentModel>("/projects");
 // projects.items.sort((a, b) => a.properties?.startingTime - b.properties?.startingTime)
 
 const categories: string[] = model.properties?.filterableCategories || []
-categories.push(othersCategory)
+if (!categories.includes(othersCategory)) {
+  categories.push(othersCategory)
+}
 
 let projectHighlight = model.properties?.featuredProject?.pop();
 if (!projectHighlight) {

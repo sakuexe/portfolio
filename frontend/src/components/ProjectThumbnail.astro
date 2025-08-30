@@ -15,9 +15,9 @@ interface Props {
 const { project, categories, width = 700, height = 500 } = Astro.props;
 
 let imageUrl = "";
-if (project.properties?.images 
-    && project.properties?.images?.length !== 0) {
-  imageUrl = `${BaseApiUrl}${project.properties.images[0].url}`;
+if (project.properties?.image
+    && project.properties?.image?.length !== 0) {
+  imageUrl = `${BaseApiUrl}${project.properties.image[0].url}`;
 }
 
 let previewTags: string[] = [];
@@ -36,7 +36,7 @@ if (project.properties?.tags) {
   {imageUrl !== ""
     ? <Image
         src={imageUrl} 
-        alt={`Thumbnail for the ${project.name} project`}
+        alt={project.properties?.altText ?? `Thumbnail for the ${project.name} project`}
         width={width}
         height={height}
         format="webp"

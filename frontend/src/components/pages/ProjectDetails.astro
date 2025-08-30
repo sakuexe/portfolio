@@ -3,6 +3,7 @@ import type {
   ProjectDetailsContentModel,
   PersonElementModel
 } from "../../client";
+import { BaseApiUrl } from "../../utils/umbraco";
 import LinkWithIcon from "../../components/LinkWithIcon.astro";
 
 import "../../styles/global.css";
@@ -14,6 +15,19 @@ interface Props {
 const { model } = Astro.props;
 
 const teamMembers = model.properties?.team?.items.map(item => item.content) as PersonElementModel[]
+
+function formatDate() {
+  const startDate = model.properties?.startingTime ? new Date(model.properties?.startingTime) : null;
+  const endDate = model.properties?.endTime ? new Date(model.properties?.endTime) : null;
+
+  return `
+    ${startDate?.getDay()}.${startDate?.getMonth()}.${startDate?.getFullYear()} 
+    -> 
+    ${endDate?.getDay()}.${endDate?.getMonth()}.${endDate?.getFullYear()}
+  `;
+}
+
+const imageUrl = model.properties?.image?.[0].url ? `${BaseApiUrl}${model.properties?.image?.[0].url}` : null;
 ---
 
 <style>
@@ -36,12 +50,12 @@ const teamMembers = model.properties?.team?.items.map(item => item.content) as P
 
   <div class="max-h-96 overflow-clip relative w-full 
     h-full shadow-inner aspect-video motion-safe:transition-[max-height]">
-  { model.properties?.images && model.properties.images.length != 0 
+  { !imageUrl
     ? <div class="grid-pattern opacity-50 w-full aspect-video"></div>
   : (<img 
     id="portfolio-image"
-    src="@GetImageUrl(Model.ImageUrl)" 
-    alt="@(Model.AltText ?? $Image of the {Model.Title} project)"
+    src={imageUrl}
+    alt={model.properties?.altText}
     loading="lazy" 
     decoding="async"
     class="w-full h-full object-cover saturate-0
@@ -61,7 +75,7 @@ const teamMembers = model.properties?.team?.items.map(item => item.content) as P
     <div class="space-y-6 xl:col-span-2">
       <div class="subheader">
         <p><span>//</span> Project</p>
-        <h1>@Model.Title</h1>
+        <h1>{model.name}</h1>
       </div>
 
       <div class="flex flex-wrap gap-2">
@@ -71,9 +85,11 @@ const teamMembers = model.properties?.team?.items.map(item => item.content) as P
         )}
       </div>
 
-      <div class="flex gap-2 items-center">
-        <span class="opacity-75 italic">@Model.FinishedAt</span>
-        <hr class="w-full border-primary-700">
+      <div class="flex gap-4 items-center">
+        <p class="opacity-75 italic w-max">
+          {formatDate()}
+        </p>
+        <hr class="grow border-primary-700">
       </div>
 
       <div class="space-y-6">

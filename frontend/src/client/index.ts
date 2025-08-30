@@ -323,7 +323,8 @@ export type ProjectDetailsPropertiesModel = {
     endTime?: string | null;
     links?: Array<ApiLinkModel> | null;
     team?: ApiBlockListModel;
-    images?: Array<IApiMediaWithCropsModel> | null;
+    image?: Array<IApiMediaWithCropsModel> | null;
+    altText?: string | null;
 };
 
 export type ProjectsContainerContentModel = IApiContentModelBase & {
