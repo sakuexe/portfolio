@@ -24,6 +24,7 @@
         ];
 
         shellHook = ''
+          WEBSITE_URL="https://sakukarttunen.com"
           FRONTEND_EXISTS="$(tmux list-windows | grep frontend)"
           if [[ ! $FRONTEND_EXISTS ]]; then
             tmux new-window -n frontend \

@@ -79,7 +79,7 @@ export type ExperienceContentResponseModel = IApiContentResponseModelBase & {
     contentType: 'experience';
 } & ExperienceContentModel;
 
-export type ExperiencePropertiesModel = SeoPropertiesPropertiesModel & {
+export type ExperiencePropertiesModel = SeoPropertiesPropertiesModel & SitemapPropertiesPropertiesModel & {
     role?: string | null;
     organization?: string | null;
     location?: string | null;
@@ -160,7 +160,7 @@ export type IApiContentResponseModelBase = IApiContentModelBase & {
     };
 };
 
-export type IApiElementModel = ExpertiseCardElementModel | ProgressBarElementModel | IconWithLabelElementModel | PersonElementModel | ContactElementModel | AboutMeElementModel | ExpertiseElementModel | SkillsElementModel | ProjectsElementModel | ExperiencesElementModel | SeoPropertiesElementModel;
+export type IApiElementModel = ExpertiseCardElementModel | ProgressBarElementModel | IconWithLabelElementModel | PersonElementModel | ContactElementModel | AboutMeElementModel | ExpertiseElementModel | SkillsElementModel | ProjectsElementModel | ExperiencesElementModel | SeoPropertiesElementModel | SitemapPropertiesElementModel;
 
 export type IApiElementModelBase = {
     readonly id: string;
@@ -276,7 +276,7 @@ export type ProfessionalBackgroundContentResponseModel = IApiContentResponseMode
     contentType: 'professionalBackground';
 } & ProfessionalBackgroundContentModel;
 
-export type ProfessionalBackgroundPropertiesModel = SeoPropertiesPropertiesModel & {
+export type ProfessionalBackgroundPropertiesModel = SeoPropertiesPropertiesModel & SitemapPropertiesPropertiesModel & {
     description?: RichTextModel;
 };
 
@@ -301,7 +301,7 @@ export type ProjectDetailsContentResponseModel = IApiContentResponseModelBase & 
     contentType: 'projectDetails';
 } & ProjectDetailsContentModel;
 
-export type ProjectDetailsPropertiesModel = SeoPropertiesPropertiesModel & {
+export type ProjectDetailsPropertiesModel = SeoPropertiesPropertiesModel & SitemapPropertiesPropertiesModel & {
     tags?: Array<string> | null;
     details?: RichTextModel;
     startingTime?: string | null;
@@ -322,7 +322,7 @@ export type ProjectsContainerContentResponseModel = IApiContentResponseModelBase
     contentType: 'projectsContainer';
 } & ProjectsContainerContentModel;
 
-export type ProjectsContainerPropertiesModel = SeoPropertiesPropertiesModel;
+export type ProjectsContainerPropertiesModel = SeoPropertiesPropertiesModel & SitemapPropertiesPropertiesModel;
 
 export type ProjectsElementModel = IApiElementModelBase & {
     contentType: 'projects';
@@ -367,8 +367,20 @@ export type SiteContentResponseModel = IApiContentResponseModelBase & {
     contentType: 'site';
 } & SiteContentModel;
 
-export type SitePropertiesModel = SeoPropertiesPropertiesModel & {
+export type SitePropertiesModel = SeoPropertiesPropertiesModel & SitemapPropertiesPropertiesModel & {
     pageContent?: ApiBlockListModel;
+};
+
+export type SitemapPropertiesElementModel = IApiElementModelBase & {
+    contentType: 'sitemapProperties';
+} & {
+    properties?: SitemapPropertiesPropertiesModel;
+};
+
+export type SitemapPropertiesPropertiesModel = {
+    relativePriority?: number | null;
+    changeFrequency?: string | null;
+    hideFromSitemap?: boolean | null;
 };
 
 export type SkillsElementModel = IApiElementModelBase & {
