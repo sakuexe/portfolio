@@ -1,37 +1,26 @@
 services:
   backend:
-    image: backend
+    image: ghcr.io/sakuexe/portfolio:prod
     environment:
-        - ASPNETCORE_ENVIRONMENT=Development
-        - ConnectionStrings__umbracoDbDSN=Server=umb_database;Database=umbracoDb;User Id=sa;Password=${DB_PASSWORD};TrustServerCertificate=true;
-        - ConnectionStrings__umbracoDbDSN_ProviderName=Microsoft.Data.SqlClient
+        - ASPNETCORE_ENVIRONMENT=Production
+        - ConnectionStrings__umbracoDbDSN=Data Source=|DataDirectory|/Umbraco.sqlite.db;Cache=Shared;Foreign Keys=True;Pooling=True
+        - ConnectionStrings__umbracoDbDSN_ProviderName=Microsoft.Data.Sqlite
     volumes:
-      - umb_media:/app/wwwroot/media
-      - umb_logs:/app/umbraco/Logs
-      - umb_data:/app/umbraco
-    build:
-      context: .
-      dockerfile: backend/Dockerfile
-
+      - umb_media:/app/portfolio/wwwroot/media
+      - umb_logs:/app/portfolio/umbraco/Logs
+      - umb_data:/app/portfolio/umbraco
+      - ./database.sqlite3:/app/portfolio/umbraco/Data/Umbraco.sqlite.db
     restart: always
     ports:
-      - "44372:8080"
+      - "80:80"
+      - "443:443"
     networks:
       - umbnet
 
-# These volumes are all made as bind mounts, meaning that they are bound to the host machine's file system.
-# This is to better facilitate local development in the IDE, so the views, models, etc... are available in the IDE.
-# This can be changed by removing the driver and driver_opts from the volumes.
 volumes:
   umb_media:
-    driver: local
-    driver_opts:
-      type: none
-      device: ./backend/wwwroot/media
-      o: bind
   umb_logs:
   umb_data:
 
 networks:
   umbnet:
-    driver: bridge
