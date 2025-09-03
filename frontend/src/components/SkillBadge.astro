@@ -3,6 +3,7 @@ import SkLogo from "../assets/images/sklogo.svg";
 import type { IApiMediaWithCropsModel } from "../client";
 import InlineRemoteSvg from "../utils/svg_inliner";
 import { BaseApiUrl } from "../utils/umbraco";
+import { Image } from "astro:assets";
 
 interface Props {
   media?: IApiMediaWithCropsModel[] | null | undefined;
@@ -41,12 +42,10 @@ if (url?.toLowerCase().endsWith(".svg")) {
 
 {url && !inlineSvg && (
   // Fallback for non-SVG (or failed fetch)
-  <img
+  <Image
     src={`${BaseApiUrl}${url}`}
     alt=""
     width={width}
     height={height}
-    loading="lazy"
-    decoding="async"
   />
 )}
