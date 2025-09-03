@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
   # Allows external webhook trigger
   repository_dispatch:
-    types: [external_hook]
+    types: [rebuild_frontend]
 
 permissions:
   contents: read
@@ -19,8 +19,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      
       - name: Checkout your repository using git
         uses: actions/checkout@v4
+        with:
+          ref: prod
+
       - name: Install, build, and upload your site
         uses: withastro/action@v3
         with:
