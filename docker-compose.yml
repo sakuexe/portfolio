@@ -1,26 +1,35 @@
 services:
-  backend:
-    image: ghcr.io/sakuexe/portfolio:prod
-    environment:
-        - ASPNETCORE_ENVIRONMENT=Production
-        - ConnectionStrings__umbracoDbDSN=Data Source=|DataDirectory|/Umbraco.sqlite.db;Cache=Shared;Foreign Keys=True;Pooling=True
-        - ConnectionStrings__umbracoDbDSN_ProviderName=Microsoft.Data.Sqlite
+  watchtower:
+    # watchtower checks for new pushes to the portfolio image
+    # and then pulls them automatically
+    # https://containrrr.dev/watchtower
+    image: containrrr/watchtower
+    command:
+      # https://containrrr.dev/watchtower/arguments
+      - "--label-enable"
+      - "--interval"
+      - "30"
+      # incrementally update the containers, instead of all at once
+      - "--rolling-restart"
     volumes:
-      - umb_media:/app/portfolio/wwwroot/media
-      - umb_logs:/app/portfolio/umbraco/Logs
-      - umb_data:/app/portfolio/umbraco
-      - ./database.sqlite3:/app/portfolio/umbraco/Data/Umbraco.sqlite.db
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  umbraco_backend:
+    image: ghcr.io/sakuexe/portfolio:prod
+    platform: linux/arm64
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
+      - ConnectionStrings__umbracoDbDSN=Data Source=|DataDirectory|/Umbraco.sqlite.db;Cache=Shared;Foreign Keys=True;Pooling=True
+      - ConnectionStrings__umbracoDbDSN_ProviderName=Microsoft.Data.Sqlite
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.umbraco_backend.rule=Host(`api.sakukarttunen.com`)"
+      - "traefik.http.routers.umbraco_backend.entrypoints=web"
+      - "traefik.http.services.umbraco_backend.loadbalancer.server.port=8080"
+    volumes:
+      - ./media:/app/portfolio/wwwroot/media
+      - ./logs:/app/portfolio/umbraco/Logs
+      - ./umbraco_data:/app/portfolio/umbraco/Data
     restart: always
-    ports:
-      - "80:80"
-      - "443:443"
-    networks:
-      - umbnet
-
-volumes:
-  umb_media:
-  umb_logs:
-  umb_data:
-
-networks:
-  umbnet:
+    env_file: ".env"

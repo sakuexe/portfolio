@@ -39,5 +39,16 @@
           fi
         '';
       };
+
+      # a quick script for rebasing the main branch into prod
+      # to run it do `nix run #deploy`
+      packages.${system}.deploy = pkgs.writeShellScriptBin "prod" ''
+        set -e # exit on errors
+        ${pkgs.git}/bin/git switch prod
+        ${pkgs.git}/bin/git rebase main
+        ${pkgs.git}/bin/git push origin prod
+        ${pkgs.git}/bin/git switch main
+      '';
+
     };
 }
