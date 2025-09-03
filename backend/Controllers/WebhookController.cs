@@ -30,15 +30,24 @@ public class WebhooksController(
         var token = cfg.GetValue<string>("GitHub:Token");
         var repo = cfg.GetValue<string>("GitHub:Repo"); // "OWNER/REPO"
         var hookName = cfg.GetValue<string>("GitHub:HookName"); // "external_hook"
+        var targetBranch = cfg.GetValue<string>("GitHub:TargetBranch"); // "prod"
 
         if (string.IsNullOrEmpty(token)) return StatusCode(500, "Missing GitHub token");
 
         var url = $"https://api.github.com/repos/{repo}/dispatches";
+        var requestBody = new
+        {
+            @event_type = hookName,
+            @client_payload = new
+            {
+                @ref = $"refs/heads/{targetBranch}"
+            }
+        };
         var client = httpClientFactory.CreateClient();
         var req = new HttpRequestMessage(HttpMethod.Post, url)
         {
             Content = new StringContent(
-                JsonSerializer.Serialize(new { @event_type = hookName }),
+                JsonSerializer.Serialize(requestBody),
                 Encoding.UTF8, "application/json"
             )
         };
