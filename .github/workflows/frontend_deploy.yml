@@ -7,6 +7,12 @@ on:
   repository_dispatch:
     types: [rebuild_frontend]
 
+# Ensure only one "frontend_deploy" workflow can run at a time
+concurrency:
+  # single global deploy slot:
+  group: frontend_deploy
+  cancel-in-progress: true
+
 permissions:
   contents: read
   pages: write

@@ -3,8 +3,16 @@ name: Deploy the backend github image
 on:
   push:
     branches: [ 'prod' ]
+    paths-ignore:
+      - '.github/**'
   # Allows you to run this workflow manually from the Actions tab on GitHub.
   workflow_dispatch:
+
+# Ensure only one "backend_deploy" workflow can run at a time
+concurrency:
+  # single global deploy slot:
+  group: backend_deploy
+  cancel-in-progress: true
 
 env:
   # Github registry
