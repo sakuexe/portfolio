@@ -1,0 +1,14 @@
+{
+    "alias": "login.extensions",
+    "name": "Login extensions",
+    "version": "1.0.0",
+    "allowPublicAccess": true,
+    "extensions": [
+        {
+            "type": "appEntryPoint",
+            "alias": "CustomLoginPage",
+            "name": "Custom Login Page for Umbraco",
+            "js": "/App_Plugins/Login/custom-login-page.js"
+        }
+    ]
+}

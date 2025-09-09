@@ -17,7 +17,12 @@ interface Props {
 const { model } = Astro.props;
 
 const projects = await GetChildContent<ProjectDetailsContentModel>("/projects");
-// projects.items.sort((a, b) => a.properties?.startingTime - b.properties?.startingTime)
+// projects.items.sort((a, b) => {
+//   if (a.properties?.startingTime && b.properties?.startingTime) {
+//     return a.properties?.startingTime - b.properties?.startingTime
+//   }
+//   return a.properties?.endTime - b.properties?.endTime
+// });
 
 const categories: string[] = model.properties?.filterableCategories || []
 if (!categories.includes(othersCategory)) {
@@ -115,7 +120,7 @@ function getCategories(project: ProjectDetailsContentModel): string[] {
           { projectHighlight?.name }
         </h3>
         <a 
-          href={`/portfolio${projectHighlight.route.path}`}
+          href={projectHighlight.route.path}
           class="btn bg-secondary-600 w-max mt-4">
           View Project
         </a>

@@ -1,0 +1,8 @@
+:root {
+  /* --umb-login-curves-display: none; */
+  --umb-login-background: #242129;
+  --umb-login-image-border-radius: 10px;
+  --umb-login-curves-color: oklch(43.2% 0.232 292.759);
+  --umb-login-text-color: oklch(94.3% 0.029 294.588);
+  --umb-login-primary-color: oklch(43.2% 0.232 292.759);
+}
