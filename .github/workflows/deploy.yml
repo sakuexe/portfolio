@@ -49,6 +49,15 @@ jobs:
 
       - run: npm ci
 
+      # Astro's image cache lives in node_modules, which npm ci wipes, so
+      # restore it afterwards. Entries are content-addressed: restore the
+      # newest one and save a fresh one each run.
+      - uses: actions/cache@v6
+        with:
+          path: website/node_modules/.astro
+          key: astro-${{ hashFiles('website/package-lock.json') }}-${{ github.run_id }}
+          restore-keys: astro-${{ hashFiles('website/package-lock.json') }}-
+
       - name: Check
         run: npx astro check
 
