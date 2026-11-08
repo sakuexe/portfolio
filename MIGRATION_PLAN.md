@@ -157,7 +157,7 @@ Reference setup: `../taurudesign_landingpage/website` (adapter config,
 
 ## 5. Cutover
 
-> **Status: 0–3 done, site and contact form live.** Beyond the plan:
+> **Status: done.** Beyond the plan:
 > - The first deploy didn't attach the custom domain; it was added by hand in
 >   the Worker dashboard (Domains). It matches the `routes` entry in
 >   `wrangler.jsonc`, so later deploys keep it. Why the deploy skipped it is
@@ -187,21 +187,25 @@ Reference setup: `../taurudesign_landingpage/website` (adapter config,
 2. ~~Make the first deploy to a temporary route and test the form end to end.~~
    No temporary route (see step 4); tested on the real domain instead.
 3. ~~Delete the GitHub Pages DNS record and deploy with the real route.~~ Done.
-4. Disable GitHub Pages, delete the `prod` branch (still on the remote at
-   `c7bed6a`) and the `github-pages` environment. The `www` redirect is
-   already in place, so Pages going away doesn't break it.
-5. Shut down the Umbraco host, remove the `api.sakukarttunen.com` DNS record.
-6. Delete the stale `sakukarttunen` Worker if one exists (pre-rename name).
+4. Disable GitHub Pages, delete the `prod` branch and the `github-pages`
+   environment. The `www` redirect is already in place, so Pages going away
+   doesn't break it. Done. `prod` was at `c7bed6a`, an ancestor of the
+   `umbraco` tag, so nothing was lost.
+5. ~~Shut down the Umbraco host, remove the `api.sakukarttunen.com` DNS record.~~ Done.
+6. ~~Delete the stale `sakukarttunen` Worker if one exists.~~ It never existed.
 
 ## 6. Repo cleanup
 
-- Remove `backend/`, `docker-compose.yml`, and the .NET/Umbraco bits of `flake.nix`.
-- GitHub leftovers from the old workflows:
-  - delete the `SECRET_PAT` repo secret and revoke the token itself
-  - delete the `ghcr.io/sakuexe/portfolio` images (after cutover 5)
-  - delete the `github-pages` environment (with cutover 4)
-- Rewrite the README: dev setup, `.dev.vars` for local secrets, how to add a
-  project (new folder + `index.md` + image), deploy flow.
+> **Status: done.** The flake had already lost its .NET bits; only the tmux
+> window was still named `frontend`.
+
+- ~~Remove `backend/`, `docker-compose.yml`, and the .NET/Umbraco bits of `flake.nix`.~~
+- ~~GitHub leftovers from the old workflows:~~ Done.
+  - ~~delete the `SECRET_PAT` repo secret and revoke the token itself~~
+  - ~~delete the `ghcr.io/sakuexe/portfolio` images (after cutover 5)~~
+  - ~~delete the `github-pages` environment (with cutover 4)~~
+- ~~Rewrite the README: dev setup, `.dev.vars` for local secrets, how to add a
+  project (new folder + `index.md` + image), deploy flow.~~ Done.
 
 ## Open items (not blocking)
 

@@ -20,11 +20,11 @@
 
         shellHook = ''
           WEBSITE_URL="https://sakukarttunen.com"
-          FRONTEND_EXISTS="$(tmux list-windows | grep frontend)"
-          if [[ ! $FRONTEND_EXISTS ]]; then
-            tmux new-window -n frontend \
+          WEBSITE_EXISTS="$(tmux list-windows | grep website)"
+          if [[ ! $WEBSITE_EXISTS ]]; then
+            tmux new-window -n website \
               "nix develop --command zsh -ic 'cd website && npm run dev; exec zsh'"
-            tmux split-window -t frontend -v -l 20% \
+            tmux split-window -t website -v -l 20% \
               "nix develop --command zsh -ic 'docker run --rm -it -p 5000:80 -p 2525:25 rnwood/smtp4dev'"
           fi
         '';
