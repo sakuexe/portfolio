@@ -16,7 +16,6 @@
       devShells.${system}.default = pkgs.mkShell {
         propagatedBuildInputs = with pkgs; [
           nodejs_24
-          smtp4dev
         ];
 
         shellHook = ''
