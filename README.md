@@ -4,8 +4,9 @@
 from Cloudflare Workers. The only code that runs on demand is the contact form
 (an Astro Action that sends mail over SMTP).
 
-The older Umbraco-backed version is tagged
-[`umbraco`](https://github.com/sakuexe/portfolio/tree/umbraco).
+> If you're here for the headless Umbraco + Astro project, check the
+> [older build](https://github.com/sakuexe/portfolio/tree/baf703b3cf1fa6e2ee44ea26e79ae8f35a8a3dbc)
+> (tag `umbraco`), from before I moved to plain Astro on Cloudflare Workers.
 
 ## Development
 
