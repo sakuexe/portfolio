@@ -1,0 +1,148 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import { projects as section } from "../data/home";
+import { byRecency } from "../utils/date";
+import ProjectThumbnail from "./ProjectThumbnail.astro"
+import { Image } from "astro:assets";
+import Phone from "../assets/images/phone.webp";
+
+const othersCategory = "Other";
+
+const projects = (await getCollection("projects")).sort((a, b) => byRecency(a.data, b.data));
+
+const categories = [...section.filterableCategories];
+if (!categories.includes(othersCategory)) {
+  categories.push(othersCategory)
+}
+
+const projectHighlight = projects.find(project => project.id === section.featured)
+  ?? projects[Math.floor(Math.random() * projects.length)];
+
+function getCategoriesCount(category: string): number {
+  let projectsWithCategory = projects
+    .filter(project => project.data.tags.includes(category));
+
+  if (category.toLowerCase() === othersCategory.toLowerCase()) {
+    projectsWithCategory = projects
+      .filter(project => !project.data.tags.some(tag => categories.includes(tag)));
+  };
+
+  return projectsWithCategory.length;
+}
+
+function getCategories(project: CollectionEntry<"projects">): string[] {
+  const categoryTags = project.data.tags.filter(tag => categories.includes(tag))
+  if (categoryTags.length !== 0) {
+    return categoryTags;
+  }
+
+  return [othersCategory];
+}
+---
+
+<style>
+#portfolio-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.category-seperator {
+  opacity: 0.5;
+  pointer-events: none;
+  user-select: none;
+}
+
+#portfolio-filter > .category-seperator:last-child {
+  display: none;
+}
+
+#portfolio-filter > li > button {
+  cursor: pointer;
+}
+
+#portfolio-filter > li > button > sup {
+  text-decoration: none;
+  font-size: 16px;
+  color: var(--color-secondary-text);
+}
+
+#portfolio-filter > li.active > button > span {
+  color: var(--color-secondary-text);
+  text-decoration: underline;
+  text-underline-offset: 8px;
+  text-decoration-thickness: 4px;
+  text-decoration-color: var(--color-secondary);
+}
+</style>
+
+<section id="portfolio" class="space-y-6 max-w-content mx-auto">
+  <div class="grid max-w-6xl gap-x-8 lg:mx-auto md:grid-cols-2 md:col-span-full">
+    <div class="space-y-4 max-w-xl mx-auto">
+      <div class="subheader">
+        <p><span>// 04</span> projects</p>
+        <h2>{section.heading}</h2>
+      </div>
+      <p>
+        Here you can browse some of my previous projects and works. You can click
+        on them to view more details about the project and the technologies used in them.
+      </p>
+      <p>
+        If you would like to hear more about any projects, feel free to contact me.
+        I am always down to discuss the process and the technologies used in them.
+      </p>
+    </div>
+    <div class="relative flex flex-col justify-center min-h-[400px]">
+      <div class="pb-10">
+        <p>Featured Project:</p>
+        <h3 
+          class="text-5xl font-bold w-fit bg-primary-900/70 px-4 py-2 
+          outline-1 outline-primary-100/20 rounded-md backdrop-blur-sm">
+          { projectHighlight.data.title }
+        </h3>
+        <a 
+          href={`/projects/${projectHighlight.id}/`}
+          class="btn bg-secondary-600 w-max mt-4">
+          View Project
+        </a>
+      </div>
+      <Image 
+        src={Phone}
+        width="637"
+        height="800"
+        layout="constrained"
+        alt="Phone with a screenshot of the website on it"
+        class="absolute top-0 right-0 -z-10 h-full w-auto rotate-6"/>
+    </div>
+  </div>
+
+  <div class="md:col-span-full">
+    <p>Filter by:</p>
+    <ul id="portfolio-filter" class="flex flex-wrap gap-2" data-all-categories={categories.join(";")}>
+      <li class="active">
+        <button type="button">
+          <span>All</span>
+          <sup>{ projects.length }</sup>
+        </button>
+      </li>
+      <li class="category-seperator">/</li>
+      { categories.map((category) => (
+        <li data-category={ category }>
+          <button type="button">
+            <span>{ category }</span>
+            <sup>{ getCategoriesCount(category) }</sup>
+          </button>
+        </li>
+        <li class="category-seperator">/</li>
+      ))}
+    </ul>
+  </div>
+
+  <div id="portfolio-items">
+    { projects.map(project => (
+    <ProjectThumbnail project={project} categories={getCategories(project)} width={700} height={500} />
+    ))}
+  </div>
+</section>
+
+<script src="../scripts/project-filter.ts"></script>

@@ -1,0 +1,26 @@
+---
+import type { ImageMetadata } from "astro";
+import { Image } from "astro:assets";
+
+interface Props {
+  /** Raw SVG markup (inlined so it can be styled with CSS) or an image import */
+  icon: string | ImageMetadata;
+  width?: number;
+  height?: number;
+}
+
+const { icon, width = 170, height = 170 } = Astro.props;
+---
+
+<style is:global>
+#skill-badges svg,
+#skill-badges img {
+  width: 100%;
+  height: auto;
+}
+</style>
+
+{typeof icon === "string"
+  ? <Fragment set:html={icon} />
+  : <Image src={icon} alt="" width={width} height={height} />
+}

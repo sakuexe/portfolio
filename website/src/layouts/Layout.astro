@@ -1,0 +1,79 @@
+---
+import Nav from "../components/Nav.astro"
+import MobileNav from "../components/MobileNav.astro"
+import Footer from "../components/Footer.astro"
+import SeoImage from "../assets/images/callingcard.webp";
+
+import "../styles/global.css";
+
+export interface Seo {
+  title?: string;
+  description?: string;
+  keywords?: string[];
+  noindex?: boolean;
+  nofollow?: boolean;
+}
+
+interface Props {
+  seo?: Seo;
+}
+
+const { seo } = Astro.props;
+const title = seo?.title ? `${seo.title} - Saku's portfolio` : "Saku's portfolio";
+// og:image has to be an absolute URL
+const seoImageUrl = new URL(SeoImage.src, Astro.site).href;
+
+const domain = "https://sakukarttunen.com";
+const author = "Saku Karttunen";
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+    <link rel="sitemap" href="/sitemap.xml" />
+
+		<link rel="icon" href="/favicon.ico" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <title>{title}</title>
+    <meta name="og:title" content={title}>
+
+    <!-- SEO tags -->
+    <meta property="author" content={author} />
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:site_name" content={seo?.title ?? "Saku's portfolio"} />
+    <meta property="og:url" content={Astro.url.href} />
+    <meta property="og:type" content="website">
+    <meta property="og:image" content={seoImageUrl} />
+    <meta property="og:image:alt" content="Logo with the lettes S and K in front of a spiral pattern with the text: Saku Karttunen" />
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="twitter:domain" content={Astro.url.host}>
+    <meta property="twitter:url" content={Astro.url.href}>
+    <meta name="twitter:image" content={seoImageUrl}>
+
+    <!-- Page specific meta tags -->
+    <meta name="description" content={seo?.description}>
+    <meta name="og:description" content={seo?.description}>
+    <meta name="keywords" content={seo?.keywords?.join(",")}>
+    <meta name="robots" content={`${seo?.noindex ? "noindex" : "index"}, ${seo?.nofollow ? "nofollow" : "follow"}`}>
+    <link rel="canonical" href={`${domain}${Astro.url.pathname}`}>
+	</head>
+	<body class="text-primary-100 bg-primary text-lg font-mono leading-relaxed min-w-[356px]">
+    <Nav />
+    <MobileNav />
+
+    <main role="main" class="pb-20 min-h-[90svh] overflow-x-clip">
+      <slot />
+    </main>
+
+    <Footer />
+	</body>
+</html>

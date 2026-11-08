@@ -1,0 +1,72 @@
+---
+import { render, type CollectionEntry } from "astro:content";
+import PlaceholderImage from "../assets/images/callingcard.webp";
+import { Image } from "astro:assets";
+import { formatMonth } from "../utils/date";
+
+interface Props {
+  experience: CollectionEntry<"experiences">
+}
+
+const { experience } = Astro.props;
+const { data } = experience;
+const { Content } = await render(experience);
+---
+
+<style is:global>
+* > .experience-card:nth-child(even) > .exp-header {
+  @media (min-width: 1024px) {
+    order: 1;
+  }
+}
+</style>
+
+<div class="experience-card grid gap-4 lg:grid-cols-2">
+  <div class="exp-header flex flex-col justify-center py-4 overflow-clip relative section-padding">
+    <div class="timespan flex gap-2 text-secondary-400">
+      // <p>{formatMonth(data.start)}</p>
+      -&gt;
+      <p>{formatMonth(data.end)}</p>
+    </div>
+
+    <h3 class="text-4xl font-sans mb-2">{data.role}</h3>
+    <p class="text-xl font-sans">
+      {data.organization}
+      {
+        data.location 
+        && <span class="opacity-75">| {data.location}</span>
+      }
+    </p>
+
+    <Image
+      src={PlaceholderImage}
+      width={500}
+      height={200}
+      alt="Default background image for experience"
+      loading="lazy" 
+      decoding="async"
+      class="w-full h-full absolute top-0 left-0 object-cover -z-30" 
+    />
+
+    <!-- Darken the background -->
+    <div class="w-full h-full absolute top-0 left-0 bg-primary/75 -z-20">
+    </div>
+    <!-- Add a gradient to the background for better contrast -->
+    <div class="w-full h-full absolute top-0 left-0 mix-blend-multiply
+      bg-gradient-to-r from-primary to-transparent -z-10">
+    </div>
+  </div>
+
+  <div class="exp-body section-padding flex flex-col gap-4 justify-center px-5 sm:px-10">
+    <Content />
+    <div class="flex gap-2 flex-wrap">
+      {data.tags.map(tag => (
+        <span class="border border-secondary px-6 py-1.5 rounded-full 
+          select-none pointer-default capitalize 
+          motion-safe:transition-all hover:bg-secondary">
+          {tag}
+        </span>
+      ))}
+    </div>
+  </div>
+</div>

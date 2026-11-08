@@ -1,0 +1,151 @@
+---
+import { getCollection, render } from "astro:content";
+import { Picture } from "astro:assets";
+
+import Layout from "../../layouts/Layout.astro";
+import LinkWithIcon from "../../components/LinkWithIcon.astro";
+import { formatDay } from "../../utils/date";
+
+import "../../styles/global.css";
+
+export async function getStaticPaths() {
+  const projects = await getCollection("projects");
+  return projects.map(project => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { data } = project;
+const { Content } = await render(project);
+---
+
+<style>
+/* gradient to mix the image more with the overall style */
+.image-container::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: linear-gradient(to top, var(--color-primary), transparent);
+  pointer-events: none;
+}
+
+/* color the image to match the theme */
+.image-container:has(img)::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-secondary);
+  mix-blend-mode: multiply;
+  opacity: 0.2;
+  backdrop-filter: saturate(0);
+  pointer-events: none;
+}
+
+.grid-pattern {
+  opacity: 0.5;
+  aspect-ratio: 16/9;
+}
+
+picture > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+</style>
+
+<Layout seo={{ title: data.title, ...data.seo }}>
+<section class="no-container mt-16 max-w-content mx-auto">
+
+  <div class="image-container max-h-96 overflow-clip relative w-full 
+    h-full shadow-inner aspect-video motion-safe:transition-[max-height]">
+    { data.image && <Picture 
+        id="portfolio-image"
+        src={data.image}
+        alt={data.imageAlt ?? "placeholder image"}
+        width={1280}
+        height={720}
+        layout="full-width"
+        formats={["avif", "webp", "jpeg"]}
+        fallbackFormat="jpeg"
+      />
+    }
+  </div>
+
+  <div class="px-5 py-8 grid gap-y-6 gap-x-16 sm:px-10 xl:grid-cols-3">
+    <div class="space-y-6 xl:col-span-2">
+      <div class="subheader">
+        <p><span>//</span> Project</p>
+        <h1>{data.title}</h1>
+      </div>
+
+      <div class="flex flex-wrap gap-2">
+        { data.tags.map(tag => 
+              <span class="border border-secondary px-6 py-1.5 rounded-full cursor-default
+          select-none capitalize motion-safe:transition-all hover:bg-secondary">{tag}</span>
+        )}
+      </div>
+
+      <div class="flex gap-4 items-center">
+        <p class="opacity-75 italic w-max">
+          {formatDay(data.start)} -&gt; {formatDay(data.end)}
+        </p>
+        <hr class="grow border-primary-700">
+      </div>
+
+      <div class="space-y-6">
+        <Content />
+      </div>
+    </div>
+
+    <hr class="border-primary-700 xl:hidden">
+
+    <div class="flex gap-y-6 gap-x-16 flex-wrap content-start py-6 px-4 
+      border-primary-700 rounded-lg">
+      <div>
+        <div>
+          <p><span class="text-secondary-400">//</span> Credits</p>
+          <h2 class="text-4xl font-bold font-sans">The Team</h2>
+        </div>
+        { data.team.length === 0 && <p>Just me</p> }
+        { data.team.map(member => (
+          <div class="flex gap-2 items-center">
+            <ul>
+              <li>
+                <p class="capitalize">{member.name}</p> 
+                { member.links.map(link => (
+                  <LinkWithIcon link={link} />
+                ))}
+              </li>
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <div>
+          <p><span class="text-secondary-400">//</span> Links</p>
+          <h2 class="text-4xl font-bold font-sans">Find out more</h2>
+        </div>
+        <ul class="space-y-2">
+          { data.links.length === 0 && <li>No links found</li>}
+          { data.links.map(link => (
+            <li>
+              <LinkWithIcon link={link} />
+            </li>
+          ))}
+        </ul>
+      </div>
+
+    </div>
+
+  </div>
+  </section>
+</Layout>

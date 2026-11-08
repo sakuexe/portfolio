@@ -1,0 +1,55 @@
+---
+import { getCollection } from "astro:content";
+import { experiences as section } from "../data/home";
+import { byRecency } from "../utils/date";
+import ExperienceCard from "./ExperienceCard.astro"
+
+const experiences = (await getCollection("experiences")).sort((a, b) => byRecency(a.data, b.data));
+---
+
+<style>
+#experience {
+  padding-block: 5rem;
+  max-width: 100rem;
+  margin-inline: auto;
+}
+
+#experience > *:not(:last-child) {
+  margin-bottom: 4rem;
+}
+
+#experience > div:has(.subheader) {
+  max-width: 56rem;
+}
+
+#experience > div:has(.subheader) > *:not(:last-child) {
+  margin-bottom: 1rem;
+}
+
+.experience-list {
+  display: grid;
+  /* make all the rows the same height (based on the tallest row)*/
+  grid-auto-rows: 1fr;
+  gap: 4rem;
+  @media (min-width: 1024px) {
+    row-gap: 2.5rem;
+  }
+}
+</style>
+
+<section id="experience" class="no-container">
+
+  <div class="section-padding">
+    <div class="subheader">
+      <p><span>// 05</span> Experience</p>
+      <h2>{section.heading}</h2>
+    </div>
+    <Fragment set:html={section.description} />
+  </div>
+  
+  <div class="experience-list">
+    {experiences.map(exp => (
+        <ExperienceCard experience={exp} />
+    ))}
+  </div>
+</section>

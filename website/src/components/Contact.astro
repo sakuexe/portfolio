@@ -1,0 +1,108 @@
+---
+import EmailForm from "../components/EmailForm.astro";
+import { contact } from "../data/home";
+import LinkWithIcon from "../components/LinkWithIcon.astro"
+---
+
+<style>
+#contacts {
+  max-width: 1280px;
+  margin-inline: auto;
+}
+
+#contacts > *:not(:last-child) {
+  margin-bottom: 2rem;
+}
+
+.subheader {
+  @media (min-width: 768px) {
+    text-align: center;
+  }
+}
+
+div:has(>.text-content) {
+  display: grid;
+  gap: 1.5rem;
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.text-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: space-between;
+  @media (min-width: 768px) {
+    padding-top: 1.5rem;
+  }
+}
+
+.description p > strong {
+  font-size: 2rem;
+}
+
+.links-container svg {
+  fill: currentColor;
+  width: 2rem;
+  height: 2rem;
+}
+
+.contact-info a {
+  display: inline-block;
+}
+
+.contact-info > *:not(:last-child) {
+  margin-bottom: 1rem;
+}
+
+.links-container {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.links-container > div {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+</style>
+
+<section id="contacts">
+
+  <div class="subheader">
+    <p><span>// 06</span> Contacts</p>
+    <h2>{contact.heading}</h2>
+  </div>
+
+  <div>
+    <div class="text-content">
+
+      <div class="description">
+        <p><strong>Get in Contact</strong></p>
+        <Fragment set:html={contact.description}/>
+      </div>
+
+      <div id="contact-info" class="contact-info">
+        <a 
+          href={`mailto:${contact.emailAddress}`} 
+          target="_blank">
+          {contact.emailAddress}
+        </a>
+
+        <div class="links-container">
+          {contact.links.map(link => (
+            <LinkWithIcon link={link} />
+          ))}
+        </div>
+
+        </div>
+      </div>
+
+      <div id="contact-form">
+        <EmailForm />
+      </div>
+
+  </div>
+</section>

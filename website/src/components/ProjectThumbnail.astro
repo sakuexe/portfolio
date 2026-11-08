@@ -1,0 +1,57 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { Image } from "astro:assets";
+
+interface Props {
+  project: CollectionEntry<"projects">;
+  categories: string[];
+  width?: number;
+  height?: number;
+};
+
+const { project, categories, width = 700, height = 500 } = Astro.props;
+const { data } = project;
+const previewTags = data.tags.slice(0, 3);
+---
+
+<a 
+  href={`/projects/${project.id}/`}
+  data-categories={categories?.join(";")}
+  class="block w-full aspect-[3/2] relative overflow-clip shadow-primary/50 drop-shadow-lg group"
+>
+
+  <!-- Thumbnail image for the project -->
+  {data.image
+    ? <Image
+        src={data.image} 
+        alt={data.imageAlt ?? `Thumbnail for the ${data.title} project`}
+        width={width}
+        height={height}
+        format="webp"
+        layout="constrained"
+        loading="lazy" 
+        decoding="async"
+        class="w-full h-full object-cover saturate-0 motion-safe:transition-all motion-safe:group-hover:scale-110 group-hover:saturate-50"
+      />
+    : <div class="bg-gradient-to-tr from-black to-primary-900 absolute top-0 left-0 w-full h-full isolate">
+      <div 
+        class="grid-pattern opacity-50 w-full h-full motion-safe:transition-all motion-safe:group-hover:scale-110">
+      </div>
+    </div>
+  }
+
+  <!-- Project title -->
+  <div class="absolute bottom-0 left-0 w-full z-10 py-2 px-4 leading-snug">
+    <p class="opacity-75 drop-shadow-md">{previewTags.join(" | ")}</p>
+    <h4 class="font-bold text-2xl capitalize drop-shadow-md">{data.title}</h4>
+  </div>
+
+  <!-- Add a smooth gradient to bottom of image for text contrast -->
+  <div class="bg-gradient-to-t from-black to-transparent h-1/2 w-full
+  absolute bottom-0 left-0 mix-blend-multiply opacity-95">
+  </div>
+  <!-- Color the black and white images to match the theme -->
+  <div class="bg-secondary h-full w-full opacity-25 mix-blend-multiply
+  absolute bottom-0 left-0 motion-safe:transition-all group-hover:opacity-25">
+  </div>
+</a>

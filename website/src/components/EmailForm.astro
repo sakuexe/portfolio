@@ -1,0 +1,110 @@
+---
+import FormLoader from "./forms/FormLoader.astro";
+import FormResult from "./forms/FormResult.astro";
+import "../styles/forms.css";
+---
+
+<!-- TODO(migration step 3): replace with the `contact` Astro Action -->
+<form id="email-form" action="https://api.sakukarttunen.com/api/email/contactform" method="POST">
+	<label>
+		Name
+    <input 
+      type="text"
+      id="name"
+      name="name"
+      placeholder="Firstname Lastname"
+      required
+    />
+	</label>
+
+	<label>
+		Email
+    <input 
+      type="email" 
+      id="email" 
+      name="email" 
+      placeholder="example@gmail.com"
+      required
+    />
+	</label>
+
+	<label>
+		Subject
+    <input 
+      type="text" 
+      id="subject"
+      name="subject"
+      placeholder="Cool website! 😎"
+    />
+	</label>
+
+	<label>
+		Message
+    <textarea 
+      id="message"
+      name="message"
+      required
+      placeholder="The message..."
+		></textarea>
+	</label>
+
+	<input type="text" id="honeypot" name="honeypot" class="hidden" />
+
+	<hr />
+
+  <!-- buttons -->
+	<button type="submit" 
+    class="primary">
+		Send
+	</button>
+	<button type="submit" class="secondary">
+		Clear
+	</button>
+
+  <FormLoader text="Sending email" />
+  <FormResult 
+    successMessage="Thank you for submitting the email! I will get back to you shortly." 
+  />
+</form>
+
+<script>
+  // TODO: add an on error function that also saves the input data to local storage
+  // so that we can retry sending the email
+
+  const form: HTMLFormElement | null = document.querySelector("form#email-form");
+  if (!form) throw new Error("form#email-form was not found");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formdata = new FormData(form);
+    const payload = Object.fromEntries(formdata.entries());
+    form.classList.add("loading");
+
+    let response;
+    try {
+      response = await fetch(form.action, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+    } catch (error) {
+      console.error(error);
+      form.classList.remove("loading");
+      form.classList.add("error");
+      return;
+    }
+    form.classList.remove("loading");
+
+    if (!response.ok) {
+      form.classList.add("error");
+      console.error(`[${form.action}] ${response.status} - ${await response.text()}`);
+      return;
+    }
+
+    form.classList.add("success");
+    console.debug(`[${form.action}] ${response.status} - ${await response.text()}`);
+  });
+</script>

@@ -1,0 +1,48 @@
+---
+import type { Link } from '../data/home';
+
+import GithubIcon from "@/assets/icons/github.svg";
+import InstagramIcon from "@/assets/icons/instagram.svg";
+import LinkedInIcon from "@/assets/icons/linkedin.svg";
+import WebsiteIcon from "@/assets/icons/website.svg";
+
+interface Props {
+  link: Link;
+}
+
+const { link } = Astro.props;
+
+const iconMap = [
+  {
+    domain: "github.com",
+    icon: GithubIcon,
+  },
+  {
+    domain: "instagram.com",
+    icon: InstagramIcon,
+  },
+  {
+    domain: "linkedin.com",
+    icon: LinkedInIcon,
+  },
+];
+
+const LinkIcon = iconMap.find(item => link.url.includes(item.domain))?.icon 
+  ?? WebsiteIcon;
+---
+
+<style is:global>
+  .link-with-icon svg {
+    fill: currentColor;
+    display: inline-block;
+    margin-right: 1ch;
+    width: 1.75rem;
+    height: auto;
+    aspect-ratio: 1/1;
+  }
+</style>
+
+<a href={link.url} target="_blank" rel="noopener" class="link-with-icon">
+  <LinkIcon />
+  {link.title}
+</a>
