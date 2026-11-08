@@ -1,110 +1,224 @@
 ---
+import { TURNSTILE_SITE_KEY } from "astro:env/client";
+import { limits } from "@/actions/models";
 import FormLoader from "./forms/FormLoader.astro";
 import FormResult from "./forms/FormResult.astro";
 import "../styles/forms.css";
 ---
 
-<!-- TODO(migration step 3): replace with the `contact` Astro Action -->
-<form id="email-form" action="https://api.sakukarttunen.com/api/email/contactform" method="POST">
+<!-- Native validation catches the common cases instantly; the `contact`
+     Action's Zod messages land in the [data-error-for] slots. -->
+<form id="email-form" method="POST">
 	<label>
 		Name
-    <input 
+    <input
       type="text"
       id="name"
       name="name"
       placeholder="Firstname Lastname"
+      autocomplete="name"
+      maxlength={limits.name}
+      aria-describedby="name-error"
       required
     />
+    <span class="field-error" id="name-error" data-error-for="name"></span>
 	</label>
 
 	<label>
 		Email
-    <input 
-      type="email" 
-      id="email" 
-      name="email" 
+    <input
+      type="email"
+      id="email"
+      name="email"
       placeholder="example@gmail.com"
+      autocomplete="email"
+      aria-describedby="email-error"
       required
     />
+    <span class="field-error" id="email-error" data-error-for="email"></span>
 	</label>
 
 	<label>
 		Subject
-    <input 
-      type="text" 
+    <input
+      type="text"
       id="subject"
       name="subject"
       placeholder="Cool website! 😎"
+      maxlength={limits.subject}
+      aria-describedby="subject-error"
     />
+    <span class="field-error" id="subject-error" data-error-for="subject"></span>
 	</label>
 
 	<label>
 		Message
-    <textarea 
+    <textarea
       id="message"
       name="message"
-      required
       placeholder="The message..."
+      maxlength={limits.message}
+      aria-describedby="message-error"
+      required
 		></textarea>
+    <span class="field-error" id="message-error" data-error-for="message"></span>
 	</label>
 
-	<input type="text" id="honeypot" name="honeypot" class="hidden" />
+	<!-- Honeypot. Looks like a real optional field to a bot, but no autofill
+	     dictionary maps "referral", so real users' autofill leaves it empty. -->
+	<label class="referral" aria-hidden="true">
+		How did you find me?
+		<input
+			type="text"
+			name="referral"
+			placeholder="A friend, a search, a business card…"
+			tabindex="-1"
+			autocomplete="off"
+		/>
+	</label>
+
+	<!-- Invisible mode is set on the widget in the Cloudflare dashboard. It adds
+	     the `cf-turnstile-response` field to the form. -->
+	<div class="cf-turnstile" data-sitekey={TURNSTILE_SITE_KEY} data-action="contact"></div>
 
 	<hr />
 
   <!-- buttons -->
-	<button type="submit" 
+	<button type="submit"
     class="primary">
 		Send
 	</button>
-	<button type="submit" class="secondary">
+	<button type="reset" class="secondary">
 		Clear
 	</button>
 
   <FormLoader text="Sending email" />
-  <FormResult 
-    successMessage="Thank you for submitting the email! I will get back to you shortly." 
+  <FormResult
+    successMessage="Thank you for submitting the email! I will get back to you shortly."
   />
 </form>
 
-<script>
-  // TODO: add an on error function that also saves the input data to local storage
-  // so that we can retry sending the email
+<script
+  is:inline
+  src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+  async
+  defer
+></script>
 
-  const form: HTMLFormElement | null = document.querySelector("form#email-form");
+<script>
+  import { actions, isInputError } from "astro:actions";
+
+  // From the Turnstile script loaded above.
+  declare const turnstile:
+    | {
+        getResponse(container: Element): string | undefined;
+        reset(container: Element): void;
+      }
+    | undefined;
+
+  const form = document.querySelector<HTMLFormElement>("form#email-form");
   if (!form) throw new Error("form#email-form was not found");
+  const widget = form.querySelector(".cf-turnstile")!;
+  const errorMessage = form.querySelector(".form-result .error-message")!;
+  const defaultErrorMessage = errorMessage.textContent;
+
+  function setFieldError(name: string, message?: string) {
+    const slot = form!.querySelector(`[data-error-for="${name}"]`);
+    const field = form!.elements.namedItem(name);
+    if (slot) slot.textContent = message ?? "";
+    // Not toggleAttribute: aria-invalid="" means false.
+    if (field instanceof HTMLElement) {
+      if (message) field.setAttribute("aria-invalid", "true");
+      else field.removeAttribute("aria-invalid");
+    }
+  }
+
+  function clearFieldErrors() {
+    for (const slot of form!.querySelectorAll<HTMLElement>("[data-error-for]")) {
+      setFieldError(slot.dataset.errorFor!);
+    }
+  }
+
+  function showError(message?: string) {
+    errorMessage.textContent = message ?? defaultErrorMessage;
+    form!.classList.add("error");
+  }
+
+  // A field's error goes away as soon as it's edited.
+  form.addEventListener("input", (e) => {
+    const target = e.target as HTMLInputElement;
+    if (target.name) setFieldError(target.name);
+  });
+  form.addEventListener("reset", clearFieldErrors);
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+    clearFieldErrors();
 
-    const formdata = new FormData(form);
-    const payload = Object.fromEntries(formdata.entries());
-    form.classList.add("loading");
-
-    let response;
-    try {
-      response = await fetch(form.action, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-    } catch (error) {
-      console.error(error);
-      form.classList.remove("loading");
-      form.classList.add("error");
-      return;
+    // Invisible mode may still be working, or may have turned the visitor
+    // away; the two can't be told apart here.
+    if (!turnstile?.getResponse(widget)) {
+      return showError(
+        "The form isn't ready to send yet. Please try again in a moment.",
+      );
     }
+
+    form.classList.add("loading");
+    const { error } = await actions.contact(new FormData(form));
     form.classList.remove("loading");
 
-    if (!response.ok) {
-      form.classList.add("error");
-      console.error(`[${form.action}] ${response.status} - ${await response.text()}`);
+    if (!error) {
+      form.reset();
+      turnstile.reset(widget);
+      form.classList.add("success");
       return;
     }
 
-    form.classList.add("success");
-    console.debug(`[${form.action}] ${response.status} - ${await response.text()}`);
+    if (isInputError(error)) {
+      // Validation runs before the handler, so the token wasn't spent and
+      // the visitor can fix the field and resend without a new challenge.
+      for (const [name, messages] of Object.entries(error.fields)) {
+        setFieldError(name, messages?.[0]);
+      }
+      const visible = Object.keys(error.fields).find((name) =>
+        form.querySelector(`[data-error-for="${name}"]`),
+      );
+      if (visible) {
+        (form.elements.namedItem(visible) as HTMLElement | null)?.focus();
+        return;
+      }
+      // Only the hidden Turnstile field failed.
+      return showError(error.fields["cf-turnstile-response"]?.[0]);
+    }
+
+    // The handler ran, so siteverify may have spent the token.
+    turnstile.reset(widget);
+    console.error(error);
+    // Only messages written for visitors; the rest get the generic one.
+    showError(error.code === "FORBIDDEN" ? error.message : undefined);
   });
 </script>
+
+<style>
+  .field-error {
+    color: var(--color-accent);
+    font-size: 0.875rem;
+    &:empty {
+      display: none;
+    }
+  }
+
+  input[aria-invalid],
+  textarea[aria-invalid] {
+    border-color: var(--color-accent);
+  }
+
+  /* Off the start edge, so it never adds a horizontal scrollbar. Not
+     display:none / visibility:hidden, which bots check for. */
+  .referral {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateX(-100vw);
+  }
+</style>

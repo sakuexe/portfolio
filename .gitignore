@@ -4,3 +4,8 @@
 .env.*
 
 node_modules/
+
+# Dev-only values (Turnstile test keys, local smtp4dev) are committed in
+# website/.env.development and website/.dev.vars. Everything else stays local.
+.dev.vars.*
+!website/.env.development

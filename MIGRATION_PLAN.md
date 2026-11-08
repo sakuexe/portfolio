@@ -65,6 +65,24 @@ Reference setup: `../taurudesign_landingpage/website` (adapter config,
 
 ## 3. Cloudflare adapter + contact Action
 
+> **Status: done, awaiting SMTP/Turnstile values.** Beyond the plan:
+> - Tested against the built Worker (`wrangler dev -c dist/server/wrangler.json`):
+>   validation, honeypot, missing-secrets path. Turnstile and SMTP are untested
+>   until the real values are in.
+> - `nodejs_compat` flag in `wrangler.jsonc` (worker-mailer needs it).
+> - Action split into `index.ts` (handler), `models.ts` (schema + field limits,
+>   also imported by the form, so no server-only imports) and `helpers.ts`
+>   (Turnstile verify, mail send).
+> - Turnstile token goes through the widget's default `cf-turnstile-response`
+>   form field and is validated by the Zod schema.
+> - Dev values are committed: `website/.env.development` (Vite, `astro dev` only,
+>   so a missing CI var fails the build instead of shipping test values) and
+>   `website/.dev.vars` (Worker secrets). Turnstile test keys + smtp4dev from the
+>   flake (`localhost:2525`, inbox at `localhost:5000`). Tested end to end.
+> - SMTP uses implicit TLS whenever `!import.meta.env.DEV`. worker-mailer's
+>   `authType` defaults to `[]` (every auth fails), so it's set explicitly.
+> - TODO: privacy policy page mentioning Turnstile (invisible mode).
+
 - Adapter config mirrors the sister repo: `imageService: "compile"`,
   `session: false`, `prerenderEnvironment: "node"`.
 - `wrangler.jsonc`: name, `compatibility_date`, `custom_domain` route for
@@ -112,7 +130,8 @@ Reference setup: `../taurudesign_landingpage/website` (adapter config,
   - on push to `main` (paths `website/**` and the workflow), plus `workflow_dispatch`
   - concurrency queues instead of cancelling
   - `npm ci` → `astro check && astro build` → `npx wrangler deploy`
-  - build env: `TURNSTILE_SITE_KEY` (var). Deploy env: `CLOUDFLARE_API_TOKEN`,
+  - build env (vars): `TURNSTILE_SITE_KEY`, `SMTP_HOST`, `SMTP_PORT`, `MAIL_FROM`,
+    `MAIL_TO`. Public `astro:env` values are inlined at build time. Deploy env: `CLOUDFLARE_API_TOKEN`,
     `CLOUDFLARE_ACCOUNT_ID` (secrets)
 - Delete `frontend_deploy.yml` and `backend_deploy.yml`.
 - Set Worker secrets once with `wrangler secret put` (`SMTP_USER`, `SMTP_PASSWORD`, `TURNSTILE_SECRET_KEY`).
