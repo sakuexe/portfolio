@@ -2,7 +2,7 @@
 // which `wrangler deploy` picks up through .wrangler/deploy/config.json.
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "sakukarttunen",
+  "name": "portfolio",
   "compatibility_date": "2026-11-01",
   // worker-mailer needs it.
   "compatibility_flags": ["nodejs_compat"],
@@ -12,4 +12,7 @@
   // Serve only on the custom domain, not on *.workers.dev.
   "workers_dev": false,
   "preview_urls": false,
+  // Keeps Worker logs, so the contact Action's console.error/warn calls can be
+  // read after the fact.
+  "observability": { "enabled": true },
 }

@@ -126,6 +126,25 @@ Reference setup: `../taurudesign_landingpage/website` (adapter config,
 
 ## 4. CI/CD
 
+> **Status: done, awaiting the first run.** Beyond the plan:
+> - Vars and secrets live in an `astro-build` GitHub environment limited to
+>   `main`, as in the sister repo. Build vars are set at job level, because
+>   `astro check` loads the `astro:env` schema too.
+> - `astro check` is its own CI step. The `build` script stays `astro build`.
+> - `SMTP_PORT` falls back to `465` in the workflow. An unset GitHub var
+>   expands to `""`, which `astro:env` rejects (`NaN`) instead of using the
+>   schema default.
+> - Worker renamed `sakukarttunen` → `portfolio`.
+> - `observability` enabled in `wrangler.jsonc`, so the Action's
+>   `console.error`/`warn` calls are kept in Workers Logs.
+> - API token: account `Workers Scripts: Edit`; zone `Workers Routes: Edit`,
+>   `Zone: Read`, `DNS: Read`.
+> - No temporary route: the GitHub Pages records were deleted first and the
+>   first deploy goes straight to `sakukarttunen.com` (cutover 2 and 3).
+> - SMTP stays on 465 (implicit TLS). worker-mailer's STARTTLS on 587 is
+>   opportunistic: if the server doesn't advertise it, AUTH goes out in
+>   plaintext.
+
 - New `.github/workflows/deploy.yml` (copied from the sister repo):
   - on push to `main` (paths `website/**` and the workflow), plus `workflow_dispatch`
   - concurrency queues instead of cancelling
@@ -152,6 +171,10 @@ Reference setup: `../taurudesign_landingpage/website` (adapter config,
 ## 6. Repo cleanup
 
 - Remove `backend/`, `docker-compose.yml`, and the .NET/Umbraco bits of `flake.nix`.
+- GitHub leftovers from the old workflows:
+  - delete the `SECRET_PAT` repo secret and revoke the token itself
+  - delete the `ghcr.io/sakuexe/portfolio` images (after cutover 5)
+  - delete the `github-pages` environment (with cutover 4)
 - Rewrite the README: dev setup, `.dev.vars` for local secrets, how to add a
   project (new folder + `index.md` + image), deploy flow.
 
