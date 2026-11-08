@@ -1,41 +1,29 @@
 ---
 import SuccessIcon from "../../assets/images/smiley.svg";
 import ErrorIcon from "../../assets/images/warning.svg";
-import crypto from "crypto";
 
 interface Props {
   successMessage: string;
-  hash?: string;
 }
 
-// Generate a deterministic hash based on component props + random
-// this is so that we can always find the exact component instance
-// for the script to target
-const defaultHash = crypto
-  .createHash("md5")
-  .update(JSON.stringify(Astro.props) + Date.now().toString() + Math.random())
-  .digest("hex")
-  .slice(0, 8); // shorten it
-
-const { successMessage, hash = defaultHash } = Astro.props;
+const { successMessage } = Astro.props;
 const iconSizePx = 42;
 ---
 
-<style is:inline>
-form:not(.success, .error) .form-result {
+<style>
+/* The state classes live on the parent form. */
+:global(form:not(.success, .error)) .form-result {
   transform: translateY(25px);
   opacity: 0;
   pointer-events: none;
   user-select: none;
 }
 
-form:not(.success) .form-result .success,
-form:not(.error) .form-result .error {
+:global(form:not(.success)) .form-result .success,
+:global(form:not(.error)) .form-result .error {
   display: none;
 }
-</style>
 
-<style>
 .form-result {
   display: grid;
   place-items: center;
@@ -110,7 +98,7 @@ form:not(.error) .form-result .error {
 </style>
 
 <!-- on successful submission use text-secondary-400 for the result, otherwise use text-accent -->
-<div class="form-result" data-hash={hash}>
+<div class="form-result">
   <div>
     <div class="window-bar">
       <div></div>
@@ -140,14 +128,11 @@ form:not(.error) .form-result .error {
   </div>
 </div>
 
-<script is:inline define:vars={{ hash: hash }}>
-/** @type {HTMLButtonElement | null} */
-const retryButton = document.querySelector(`.form-result[data-hash="${hash}"] button`);
-if (!retryButton) throw new Error(`.form-result[data-hash="${hash}"] button was not found`);
-
-retryButton.addEventListener("click", async (_) => {
-  const form = document.querySelector(`form:has(.form-result[data-hash="${hash}"])`);
-  if (!form) throw new Error(`form:has(.form-result[data-hash="${hash}"]) was not found`);
-  form.classList.remove("error");
-});
+<script>
+  // Bundled and run once for every instance on the page.
+  for (const button of document.querySelectorAll(".form-result .error button")) {
+    button.addEventListener("click", () => {
+      button.closest("form")?.classList.remove("error");
+    });
+  }
 </script>

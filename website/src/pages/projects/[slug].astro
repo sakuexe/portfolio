@@ -6,8 +6,6 @@ import Layout from "../../layouts/Layout.astro";
 import LinkWithIcon from "../../components/LinkWithIcon.astro";
 import { formatDay } from "../../utils/date";
 
-import "../../styles/global.css";
-
 export async function getStaticPaths() {
   const projects = await getCollection("projects");
   return projects.map(project => ({

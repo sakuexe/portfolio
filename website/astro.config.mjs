@@ -2,7 +2,6 @@
 import { defineConfig, envField } from "astro/config";
 import cloudflare from "@astrojs/cloudflare";
 import tailwindcss from "@tailwindcss/vite";
-import { fileURLToPath } from "node:url";
 
 // https://astro.build/config
 export default defineConfig({
@@ -56,12 +55,8 @@ export default defineConfig({
     // Fail at startup, not when the first request reads a secret.
     validateSecrets: true,
   },
+  // Path aliases come from `paths` in tsconfig.json.
   vite: {
     plugins: [tailwindcss()],
-    resolve: {
-      alias: {
-        "@": fileURLToPath(new URL("./src", import.meta.url)),
-      },
-    },
   },
 });

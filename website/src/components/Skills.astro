@@ -57,12 +57,12 @@ import SkillBadge from "./SkillBadge.astro";
     }
   }
   
+  /* Every icon fits this box: square and tall logos share the height, wide
+     ones (Go) are capped by the width instead of growing sideways. */
   #skill-badges .badge-icon {
-    width: 64px;
-    height: auto;
-    aspect-ratio: 1/1;
-    display: flex;
-    justify-content: center;
+    height: 64px;
+    width: 96px;
+    max-width: 100%;
   }
 
   #skill-badges > div::after {

@@ -1,13 +1,14 @@
 // Content for the front page sections. Rich text is plain HTML (rendered with set:html).
 import type { ImageMetadata } from "astro";
+import type { SvgComponent } from "astro/types";
 
-import linuxIcon from "@/assets/icons/expertise/linux-svgrepo-com.svg?raw";
-import javascriptIcon from "@/assets/icons/skills/javascript_logo.svg?raw";
-import csharpIcon from "@/assets/icons/skills/csharp_logo.svg?raw";
-import goIcon from "@/assets/icons/skills/go_logo_blue.svg?raw";
+import linuxIcon from "@/assets/icons/expertise/linux-svgrepo-com.svg";
+import javascriptIcon from "@/assets/icons/skills/javascript_logo.svg";
+import csharpIcon from "@/assets/icons/skills/csharp_logo.svg";
+import goIcon from "@/assets/icons/skills/go_logo_blue.svg";
 import pythonIcon from "@/assets/icons/skills/python_logo.png";
-import figmaIcon from "@/assets/icons/skills/figma_logo.svg?raw";
-import nixIcon from "@/assets/icons/skills/nix-snowflake-colours.svg?raw";
+import figmaIcon from "@/assets/icons/skills/figma_logo.svg";
+import nixIcon from "@/assets/icons/skills/nix-snowflake-colours.svg";
 
 export type Link = { title: string; url: string };
 
@@ -25,10 +26,10 @@ export const aboutMe = {
   cvUrl: "/files/saku-cv.pdf",
 };
 
-/** `icon` is raw SVG markup. Without one, the SK logo is used. */
+/** `icon` is an SVG import (inlined). Without one, the SK logo is used. */
 export const expertise: {
   heading: string;
-  cards: { heading: string; description: string; icon?: string }[];
+  cards: { heading: string; description: string; icon?: SvgComponent }[];
 } = {
   heading: "What do I do?",
   cards: [
@@ -48,12 +49,12 @@ export const expertise: {
   ],
 };
 
-/** Badge `icon` is either raw SVG markup (inlined) or an image import. */
+/** Badge `icon` is an SVG import (inlined) or a raster image import. */
 export const skills: {
   heading: string;
   description: string;
   bars: { label: string; value: number }[];
-  badges: { label: string; icon: string | ImageMetadata }[];
+  badges: { label: string; icon: SvgComponent | ImageMetadata }[];
 } = {
   heading: "My Skills & Tools",
   description: `<p>Here is a list of some of the skills I have aquired along the way. I have intended this list to be somewhat of a represantation of my confidence level in working with each of these technologies.</p>

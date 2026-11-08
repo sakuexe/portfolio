@@ -1,26 +1,31 @@
 ---
 import type { ImageMetadata } from "astro";
+import type { SvgComponent } from "astro/types";
 import { Image } from "astro:assets";
 
 interface Props {
-  /** Raw SVG markup (inlined so it can be styled with CSS) or an image import */
-  icon: string | ImageMetadata;
+  /** An SVG import (inlined, so it can be styled with CSS) or a raster image import */
+  icon: SvgComponent | ImageMetadata;
   width?: number;
   height?: number;
 }
 
 const { icon, width = 170, height = 170 } = Astro.props;
+// SVG imports are components (and image metadata); raster ones are plain objects.
+const Svg = typeof icon === "function" ? icon : undefined;
+const image = typeof icon === "function" ? undefined : icon;
 ---
 
 <style is:global>
+/* Contain within .badge-icon. SVGs do this through their viewBox (the default
+   preserveAspectRatio centers and fits); images need object-fit. */
 #skill-badges svg,
 #skill-badges img {
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: contain;
 }
 </style>
 
-{typeof icon === "string"
-  ? <Fragment set:html={icon} />
-  : <Image src={icon} alt="" width={width} height={height} />
-}
+{Svg && <Svg />}
+{image && <Image src={image} alt="" width={width} height={height} />}

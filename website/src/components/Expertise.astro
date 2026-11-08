@@ -1,7 +1,6 @@
 ---
 import { expertise } from "../data/home";
 import SkLogo from "../assets/images/sklogo.svg"
-import sanitizeSvg from "../utils/svg_inliner";
 ---
 
 <style is:global>
@@ -33,15 +32,12 @@ section {
   <div class="flex flex-wrap gap-4 justify-center max-w-content mx-auto">
 
     { expertise.cards.map((card) => (
-      <div class="expertise-card flex flex-col flex-grow justify-center outline-2 outline-primary-300 
+      <div class="expertise-card flex flex-col flex-grow justify-start outline-2 outline-primary-300 
         max-w-md p-6 gap-y-3 drop-shadow-lg backdrop-brightness-90 backdrop-blur-sm">
 
         <!-- card header -->
         <div class="card-header flex items-center gap-x-5">
-          { card.icon
-            ? <Fragment set:html={sanitizeSvg(card.icon)} />
-            : <SkLogo />
-          }
+          { card.icon ? <card.icon /> : <SkLogo /> }
           <h3 class="text-3xl font-bold">
             {card.heading}
           </h3>

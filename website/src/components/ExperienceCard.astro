@@ -13,8 +13,8 @@ const { data } = experience;
 const { Content } = await render(experience);
 ---
 
-<style is:global>
-* > .experience-card:nth-child(even) > .exp-header {
+<style>
+.experience-card:nth-child(even) > .exp-header {
   @media (min-width: 1024px) {
     order: 1;
   }

@@ -6,15 +6,14 @@ interface Props {
 const { text } = Astro.props;
 ---
 
-<style is:inline>
-form:not(.loading) .form-loader {
+<style>
+/* The state class lives on the parent form. */
+:global(form:not(.loading)) .form-loader {
   opacity: 0;
   pointer-events: none;
   user-select: none;
 }
-</style>
 
-<style>
 .form-loader {
   display: flex;
   flex-direction: column;

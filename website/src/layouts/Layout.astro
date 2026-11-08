@@ -23,7 +23,7 @@ const title = seo?.title ? `${seo.title} - Saku's portfolio` : "Saku's portfolio
 // og:image has to be an absolute URL
 const seoImageUrl = new URL(SeoImage.src, Astro.site).href;
 
-const domain = "https://sakukarttunen.com";
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
 const author = "Saku Karttunen";
 ---
 
@@ -64,7 +64,7 @@ const author = "Saku Karttunen";
     <meta name="og:description" content={seo?.description}>
     <meta name="keywords" content={seo?.keywords?.join(",")}>
     <meta name="robots" content={`${seo?.noindex ? "noindex" : "index"}, ${seo?.nofollow ? "nofollow" : "follow"}`}>
-    <link rel="canonical" href={`${domain}${Astro.url.pathname}`}>
+    <link rel="canonical" href={canonicalUrl}>
 	</head>
 	<body class="text-primary-100 bg-primary text-lg font-mono leading-relaxed min-w-[356px]">
     <Nav />
