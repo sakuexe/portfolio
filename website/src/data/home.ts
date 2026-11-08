@@ -22,7 +22,7 @@ export const site = {
 export const aboutMe = {
   heading: "Who am I?",
   description: `<p>Hello there, I am Saku and I am a fullstack web and software engineer from Finland. I have a passion for creating and I enjoy solving problems with code. I also like tinkering with Linux and docker in my projects. You can find me in the terminal. If you have any questions, feel free to get in contact from the form below. (Or from the provided social links).</p>
-<p>Thank you for visiting! If you have any further questions or would like to work with me, feel free to contact me through the <a href="#contact-form">form</a> below, by <a class="email" href="/saku.karttunen@proton.me">email</a> or through my social media <a href="#contact-info">listed below</a>.</p>`,
+<p>Thank you for visiting! If you have any further questions or would like to work with me, feel free to contact me through the <a href="#contact-form">form</a> below, by <a class="email" href="mailto:saku.karttunen@proton.me">email</a> or through my social media <a href="#contact-info">listed below</a>.</p>`,
   cvUrl: "/files/saku-cv.pdf",
 };
 
