@@ -12,6 +12,13 @@
   // Serve only on the custom domain, not on *.workers.dev.
   "workers_dev": false,
   "preview_urls": false,
+  // Every page is prerendered, so the Worker only needs to run for Actions.
+  // Unmatched paths get 404.html from the asset layer instead of invoking the
+  // Worker (which bots probing for .env etc. would otherwise do on every hit).
+  "assets": {
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/_actions/*"],
+  },
   // Keeps Worker logs, so the contact Action's console.error/warn calls can be
   // read after the fact.
   "observability": { "enabled": true },

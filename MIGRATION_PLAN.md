@@ -126,7 +126,7 @@ Reference setup: `../taurudesign_landingpage/website` (adapter config,
 
 ## 4. CI/CD
 
-> **Status: done, awaiting the first run.** Beyond the plan:
+> **Status: done, deployed.** Beyond the plan:
 > - Vars and secrets live in an `astro-build` GitHub environment limited to
 >   `main`, as in the sister repo. Build vars are set at job level, because
 >   `astro check` loads the `astro:env` schema too.
@@ -157,16 +157,41 @@ Reference setup: `../taurudesign_landingpage/website` (adapter config,
 
 ## 5. Cutover
 
+> **Status: 0–3 done, site and contact form live.** Beyond the plan:
+> - The first deploy didn't attach the custom domain; it was added by hand in
+>   the Worker dashboard (Domains). It matches the `routes` entry in
+>   `wrangler.jsonc`, so later deploys keep it. Why the deploy skipped it is
+>   unchecked (see the Deploy step log of the first run).
+> - The apex looked dead for ~30 min after the domain was added: resolvers had
+>   cached the empty answer from while it had no records (SOA negative TTL
+>   1800 s). Check through DoH (`curl --doh-url https://cloudflare-dns.com/dns-query`)
+>   instead of trusting the local resolver.
+> - `www` → apex: proxied placeholder record (`192.0.2.1` / `100::`) plus a
+>   Redirect Rule (301, path and query kept). Verified.
+> - Form tested end to end in production: Turnstile (hostname + action), mail
+>   delivered with SPF/DKIM/DMARC passing, Reply-To is the visitor, honeypot
+>   gives a fake success and no mail, errors show in the UI.
+> - `MAIL_FROM` was `noreply@email.holvium.com`; the verified TEM domain is
+>   `email.holvium.eu` (TEM answered `551 5.5.3 Domain name … must be added,
+>   and validated`). The same typo was in the CMS project. `MAIL_FROM` is a
+>   public `astro:env` var, so it's inlined at build: changing it needs a
+>   redeploy, unlike the Worker secrets.
+> - Gotcha: `website/.wrangler/deploy/config.json` points every wrangler
+>   command (not just `deploy`) at `dist/server/wrangler.json`. A stale `dist/`
+>   retargets `wrangler secret put` etc. at an old Worker name. Pass
+>   `--name portfolio` or rebuild first.
+
 0. ~~Tag the last Umbraco-era commit (`baf703b`) as `umbraco` and push it.~~ Done. The
    Portfolio Website project page links to `https://github.com/sakuexe/portfolio/tree/umbraco`.
-1. Create a Turnstile widget for `sakukarttunen.com` (+ `localhost`).
-2. Make the first deploy to a temporary route and test the form end to end
-   (Turnstile, SMTP, honeypot).
-3. Delete the GitHub Pages DNS record for `sakukarttunen.com`. A
-   `custom_domain` route can't be created over an existing record. Then
-   deploy with the real route. Expect a minute or two of downtime.
-4. Disable GitHub Pages, delete the `prod` branch.
+1. ~~Create a Turnstile widget for `sakukarttunen.com` (+ `localhost`).~~ Done.
+2. ~~Make the first deploy to a temporary route and test the form end to end.~~
+   No temporary route (see step 4); tested on the real domain instead.
+3. ~~Delete the GitHub Pages DNS record and deploy with the real route.~~ Done.
+4. Disable GitHub Pages, delete the `prod` branch (still on the remote at
+   `c7bed6a`) and the `github-pages` environment. The `www` redirect is
+   already in place, so Pages going away doesn't break it.
 5. Shut down the Umbraco host, remove the `api.sakukarttunen.com` DNS record.
+6. Delete the stale `sakukarttunen` Worker if one exists (pre-rename name).
 
 ## 6. Repo cleanup
 
@@ -180,5 +205,7 @@ Reference setup: `../taurudesign_landingpage/website` (adapter config,
 
 ## Open items (not blocking)
 
-- Scaleway TEM sender address / domain for `MAIL_FROM`.
+- ~~Scaleway TEM sender address / domain for `MAIL_FROM`.~~ `noreply@email.holvium.eu`.
 - Image originals, only if the exported ones look soft.
+- Privacy policy page mentioning Turnstile (from step 3).
+- `/projects/` has no index route and 404s. Fine unless something links to it.
