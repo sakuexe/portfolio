@@ -3,7 +3,7 @@ import { getCollection } from "astro:content";
 
 export const GET: APIRoute = async ({ site }) => {
   const projects = await getCollection("projects", ({ data }) => !data.seo?.noindex);
-  const paths = ["/", ...projects.map(project => `/projects/${project.id}/`)];
+  const paths = ["/", "/privacy/", ...projects.map(project => `/projects/${project.id}/`)];
 
   const urls = paths
     .map(path => `  <url><loc>${new URL(path, site)}</loc></url>`)

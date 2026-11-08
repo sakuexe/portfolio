@@ -1,0 +1,30 @@
+---
+// Layout for standalone Markdown pages in src/pages (e.g. privacy.md).
+import Layout from "./Layout.astro";
+import { formatDay } from "../utils/date";
+
+interface Props {
+  frontmatter: {
+    title: string;
+    label?: string;
+    description?: string;
+    // YAML parses an unquoted 2026-11-08 into a Date.
+    updated?: string | Date;
+  };
+}
+
+const { title, label, description, updated } = Astro.props.frontmatter;
+---
+
+<Layout seo={{ title, description }}>
+  <section class="max-w-3xl mx-auto mt-16 space-y-6">
+    <div class="subheader">
+      <p><span>//</span> {label ?? "Info"}</p>
+      <h1>{title}</h1>
+    </div>
+    {updated && <p class="opacity-75 italic">Last updated {formatDay(new Date(updated))}</p>}
+    <div class="prose">
+      <slot />
+    </div>
+  </section>
+</Layout>

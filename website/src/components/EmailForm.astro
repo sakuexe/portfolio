@@ -77,9 +77,15 @@ import "../styles/forms.css";
 		/>
 	</label>
 
-	<!-- Invisible mode is set on the widget in the Cloudflare dashboard. It adds
-	     the `cf-turnstile-response` field to the form. -->
-	<div class="cf-turnstile" data-sitekey={TURNSTILE_SITE_KEY} data-action="contact"></div>
+	<!-- Rendered on the first focus inside the form (see the script), so
+	     visitors who never use the form never contact Cloudflare. Invisible
+	     mode is set on the widget in the Cloudflare dashboard. It adds the
+	     `cf-turnstile-response` field to the form. -->
+	<div class="turnstile" data-sitekey={TURNSTILE_SITE_KEY}></div>
+	<p class="text-sm opacity-75">
+		Protected by Cloudflare Turnstile. See the <a href="/privacy/">privacy policy</a>
+		for what happens to your message.
+	</p>
 
 	<hr />
 
@@ -98,29 +104,61 @@ import "../styles/forms.css";
   />
 </form>
 
-<script
-  is:inline
-  src="https://challenges.cloudflare.com/turnstile/v0/api.js"
-  async
-  defer
-></script>
-
 <script>
   import { actions, isInputError } from "astro:actions";
 
-  // From the Turnstile script loaded above.
-  declare const turnstile:
-    | {
-        getResponse(container: Element): string | undefined;
-        reset(container: Element): void;
-      }
-    | undefined;
+  // From the Turnstile script, once loadTurnstile() has added it.
+  declare const turnstile: {
+    render(container: Element, params: Record<string, unknown>): string;
+    reset(container: Element): void;
+  };
 
   const form = document.querySelector<HTMLFormElement>("form#email-form");
   if (!form) throw new Error("form#email-form was not found");
-  const widget = form.querySelector(".cf-turnstile")!;
+  const widget = form.querySelector<HTMLElement>(".turnstile")!;
   const errorMessage = form.querySelector(".form-result .error-message")!;
   const defaultErrorMessage = errorMessage.textContent;
+
+  // Resolves once the widget has put a token in the form. Replaced whenever
+  // the token is spent or expires, so a submit always waits for a fresh one.
+  let tokenReady: Promise<true> | undefined;
+  let resolveToken: (ready: true) => void;
+
+  function awaitNewToken() {
+    tokenReady = new Promise((resolve) => (resolveToken = resolve));
+  }
+
+  function loadTurnstile() {
+    if (tokenReady) return;
+    awaitNewToken();
+    const script = document.createElement("script");
+    script.src =
+      "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+    script.onload = () =>
+      turnstile.render(widget, {
+        sitekey: widget.dataset.sitekey,
+        action: "contact",
+        callback: () => resolveToken(true),
+        "expired-callback": awaitNewToken,
+      });
+    document.head.append(script);
+  }
+
+  function resetTurnstile() {
+    awaitNewToken();
+    turnstile.reset(widget);
+  }
+
+  /** False if no token arrives in time: blocked script, or a turned-away visitor. */
+  function waitForToken() {
+    loadTurnstile();
+    const timeout = new Promise<false>((resolve) =>
+      setTimeout(resolve, 15_000, false),
+    );
+    return Promise.race([tokenReady!, timeout]);
+  }
+
+  form.addEventListener("focusin", loadTurnstile, { once: true });
 
   function setFieldError(name: string, message?: string) {
     const slot = form!.querySelector(`[data-error-for="${name}"]`);
@@ -155,21 +193,20 @@ import "../styles/forms.css";
     e.preventDefault();
     clearFieldErrors();
 
-    // Invisible mode may still be working, or may have turned the visitor
-    // away; the two can't be told apart here.
-    if (!turnstile?.getResponse(widget)) {
+    form.classList.add("loading");
+    // Usually done long before the visitor hits Send.
+    if (!(await waitForToken())) {
+      form.classList.remove("loading");
       return showError(
-        "The form isn't ready to send yet. Please try again in a moment.",
+        "We couldn't verify that you're human. Please reload the page and try again.",
       );
     }
-
-    form.classList.add("loading");
     const { error } = await actions.contact(new FormData(form));
     form.classList.remove("loading");
 
     if (!error) {
       form.reset();
-      turnstile.reset(widget);
+      resetTurnstile();
       form.classList.add("success");
       return;
     }
@@ -192,7 +229,7 @@ import "../styles/forms.css";
     }
 
     // The handler ran, so siteverify may have spent the token.
-    turnstile.reset(widget);
+    resetTurnstile();
     console.error(error);
     // Only messages written for visitors; the rest get the generic one.
     showError(error.code === "FORBIDDEN" ? error.message : undefined);

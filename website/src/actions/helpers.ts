@@ -2,6 +2,21 @@ import { MAIL_FROM, MAIL_TO, SMTP_HOST, SMTP_PORT } from "astro:env/server";
 import { WorkerMailer } from "worker-mailer";
 import type { ContactMail } from "./models";
 
+/**
+ * What the Action logs about a message: enough to recognise it
+ * (`sa***@gmail.com`) without storing the visitor's data in Workers Logs.
+ */
+export function redact({ name, email, subject, message }: ContactMail) {
+  const at = email.lastIndexOf("@");
+  const local = email.slice(0, at);
+  return {
+    email: `${local.slice(0, Math.min(2, local.length - 1))}***${email.slice(at)}`,
+    nameLength: name.length,
+    subjectLength: subject?.length ?? 0,
+    messageLength: message.length,
+  };
+}
+
 // Tokens are single-use and expire after 300 s.
 export async function verifyTurnstile(
   secret: string,

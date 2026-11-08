@@ -4,7 +4,7 @@ import {
   SMTP_USER,
   TURNSTILE_SECRET_KEY,
 } from "astro:env/server";
-import { sendContactMail, verifyTurnstile } from "./helpers";
+import { redact, sendContactMail, verifyTurnstile } from "./helpers";
 import { contactSchema } from "./models";
 
 export const server = {
@@ -16,13 +16,13 @@ export const server = {
 
       if (referral) {
         // Fake success. Logged so false positives show up in Workers logs.
-        console.warn("Contact form honeypot filled", { referral, ...mail });
+        console.warn("Contact form honeypot filled", { referral, ...redact(mail) });
         return;
       }
 
       // Worker secrets, so the build can't check them (see astro.config.mjs).
       if (!TURNSTILE_SECRET_KEY || !SMTP_USER || !SMTP_PASSWORD) {
-        console.error("Contact form secrets are not set", mail);
+        console.error("Contact form secrets are not set", redact(mail));
         throw new ActionError({ code: "INTERNAL_SERVER_ERROR" });
       }
 
@@ -51,8 +51,9 @@ export const server = {
           password: SMTP_PASSWORD,
         });
       } catch (error) {
-        // No DB copy, so the Workers logs are the only place this survives.
-        console.error("Contact form mail failed", error, mail);
+        // The message itself is lost; the visitor sees the error and can
+        // retry or email directly.
+        console.error("Contact form mail failed", error, redact(mail));
         throw new ActionError({ code: "INTERNAL_SERVER_ERROR" });
       }
     },
