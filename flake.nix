@@ -23,7 +23,7 @@
           FRONTEND_EXISTS="$(tmux list-windows | grep frontend)"
           if [[ ! $FRONTEND_EXISTS ]]; then
             tmux new-window -n frontend \
-              "nix develop --command zsh -ic 'cd frontend && npm run dev; exec zsh'"
+              "nix develop --command zsh -ic 'cd website && npm run dev; exec zsh'"
             tmux split-window -t frontend -v -l 20% \
               "nix develop --command zsh -ic 'docker run --rm -it -p 5000:80 -p 2525:25 rnwood/smtp4dev'"
           fi
